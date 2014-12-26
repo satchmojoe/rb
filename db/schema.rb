@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141226191026) do
+ActiveRecord::Schema.define(version: 20141226195701) do
 
   create_table "users", primary_key: "user_id", force: true do |t|
     t.string   "user_email"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20141226191026) do
     t.boolean  "enabled"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "last_ip_address"
   end
 
 end
