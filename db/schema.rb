@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141226195701) do
+ActiveRecord::Schema.define(version: 20141229214325) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "permissions", primary_key: "permission_id", force: true do |t|
+    t.integer  "form_id"
+    t.integer  "user_id"
+    t.boolean  "edit_form"
+    t.boolean  "edit_entries"
+    t.boolean  "view_entries"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "permissions", ["form_id"], name: "index_permissions_on_form_id", using: :btree
+  add_index "permissions", ["user_id"], name: "index_permissions_on_user_id", using: :btree
 
   create_table "users", primary_key: "user_id", force: true do |t|
     t.string   "user_email"

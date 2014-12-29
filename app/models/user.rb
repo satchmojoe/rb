@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   before_save :default_values
+  has_many :permissions
 
   has_secure_password
   validates :password,        length: {minimum: 8}
