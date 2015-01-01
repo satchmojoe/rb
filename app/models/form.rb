@@ -1,6 +1,7 @@
 class Form < ActiveRecord::Base
   before_save :default_values
   after_save :set_admin
+  after_save :create_form_values_table
 
   has_many :users, through: :permissions
   has_many :permissions
@@ -26,5 +27,9 @@ class Form < ActiveRecord::Base
     if form_admins.length == 0
       Permisison.create form_id: self_id, user_id: User.where(priv_administer: true).first.id
     end
+  end
+
+  def create_form_values_table
+    FormValuesTable.create_values_table self.id
   end
 end
