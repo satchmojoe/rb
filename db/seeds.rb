@@ -8,3 +8,8 @@
 if Rails.env == 'test'
   User.create priv_administer: true, priv_new_forms: true, enabled: true, password: 'testtest', password_confirmation: 'testtest', user_fullname: 'Full Name', user_email: 'email@email.com'
 end
+
+
+for type in ['text','radio','text_area','select','checkbox','date','datetime','number','tel'] do
+  ElementType.create element_type: type
+end
