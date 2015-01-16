@@ -5,6 +5,7 @@ class Form < ActiveRecord::Base
 
   has_many :users, through: :permissions
   has_many :permissions
+  has_many :form_elements
 
   private
   # These values will need to be updated as their functional elements get updated. For example, if
