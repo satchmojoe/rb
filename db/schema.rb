@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130123401) do
+ActiveRecord::Schema.define(version: 20150130145356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20150130123401) do
     t.boolean  "live"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uses_dictrionary"
   end
 
   add_index "element_options", ["form_element_id"], name: "index_element_options_on_form_element_id", using: :btree
