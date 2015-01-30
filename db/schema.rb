@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116162105) do
+ActiveRecord::Schema.define(version: 20150130123401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "element_options", primary_key: "eod_id", force: true do |t|
+    t.integer  "form_id"
+    t.integer  "form_element_id"
+    t.integer  "position"
+    t.string   "option"
+    t.boolean  "option_is_default"
+    t.boolean  "live"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "element_options", ["form_element_id"], name: "index_element_options_on_form_element_id", using: :btree
+  add_index "element_options", ["form_id"], name: "index_element_options_on_form_id", using: :btree
 
   create_table "element_types", primary_key: "et_id", force: true do |t|
     t.string   "element_type", null: false
