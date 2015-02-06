@@ -4,6 +4,7 @@ class FormElement < ActiveRecord::Base
 
   belongs_to :form
   belongs_to :element_type
+  delegate :e_type, to: :element_type
 
   has_many :element_options
 
@@ -11,13 +12,23 @@ class FormElement < ActiveRecord::Base
   validates :element_name,      presence: true
   validates :element_type_id,   presence: true
 
+
+  def self.find_by_e_type type
+    if type
+      FormElement.joins(:element_type).where('element_types.e_type = ?',type)
+    else
+      []
+    end
+  end
+
   private
 
   # Set the element_id to be next number for the parent form
   #   Parent form must be set
   def set_element_id
     if self.form_id
-      self.element_id = 1 + self.form.form_elements.map(&:element_id).max
+      # Set the element_id equal to one higher than highest current element on the form, if any
+      self.element_id = 1 + (self.form.form_elements.count > 0 ? self.form.form_elements.map(&:element_id).max : 0)
     else
       false
     end
@@ -25,7 +36,7 @@ class FormElement < ActiveRecord::Base
 
   def set_element_name
     unless self.element_name
-      self.element_name = self.element_id.to_s + "_1"
+      self.element_name = "element_" + self.element_id.to_s + "_1"
     end
   end
 end

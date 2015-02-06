@@ -1,8 +1,8 @@
 class ElementOption < ActiveRecord::Base
-  validates :form_element_id,      presence: true
+  validates :form_element_id, presence: true
+  validates :option,          presence: true
 
   before_save :set_position
-  before_save :set_form_id
 
   belongs_to :form_element
   has_one :form, through: :form_element

@@ -11,45 +11,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130145356) do
+ActiveRecord::Schema.define(version: 20150206140514) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "element_options", primary_key: "eod_id", force: true do |t|
-    t.integer  "form_id"
     t.integer  "form_element_id"
     t.integer  "position"
     t.string   "option"
-    t.boolean  "option_is_default"
-    t.boolean  "live"
+    t.boolean  "option_is_default", default: false
+    t.boolean  "live",              default: true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uses_dictrionary"
+    t.boolean  "uses_dictionary",   default: false
   end
 
   add_index "element_options", ["form_element_id"], name: "index_element_options_on_form_element_id", using: :btree
-  add_index "element_options", ["form_id"], name: "index_element_options_on_form_id", using: :btree
 
   create_table "element_types", primary_key: "et_id", force: true do |t|
-    t.string   "element_type", null: false
+    t.string   "e_type",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "form_7", primary_key: "entry_id", force: true do |t|
-    t.boolean  "enabled"
-    t.string   "resume_key"
+  create_table "form_element_dictionary_options", primary_key: "fedo_id", force: true do |t|
+    t.integer  "form_id"
+    t.integer  "form_element_id"
+    t.integer  "element_option_id"
+    t.boolean  "option_is_default"
+    t.integer  "export_value"
+    t.string   "variable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "form_8", primary_key: "entry_id", force: true do |t|
-    t.boolean  "enabled"
-    t.string   "resume_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "form_element_dictionary_options", ["element_option_id"], name: "index_form_element_dictionary_options_on_element_option_id", using: :btree
+  add_index "form_element_dictionary_options", ["form_element_id"], name: "index_form_element_dictionary_options_on_form_element_id", using: :btree
+  add_index "form_element_dictionary_options", ["form_id"], name: "index_form_element_dictionary_options_on_form_id", using: :btree
 
   create_table "form_elements", primary_key: "fe_id", force: true do |t|
     t.integer  "form_id",                                          null: false
@@ -125,9 +124,9 @@ ActiveRecord::Schema.define(version: 20150130145356) do
   create_table "permissions", primary_key: "permission_id", force: true do |t|
     t.integer  "form_id"
     t.integer  "user_id"
-    t.boolean  "edit_form"
-    t.boolean  "edit_entries"
-    t.boolean  "view_entries"
+    t.boolean  "edit_form",    default: false
+    t.boolean  "edit_entries", default: false
+    t.boolean  "view_entries", default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

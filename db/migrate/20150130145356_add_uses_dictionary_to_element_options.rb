@@ -1,5 +1,5 @@
 class AddUsesDictionaryToElementOptions < ActiveRecord::Migration
   def change
-    add_column :element_options, :uses_dictrionary, :boolean
+    add_column :element_options, :uses_dictionary, :boolean
   end
 end
