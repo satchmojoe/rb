@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150206140514) do
+ActiveRecord::Schema.define(version: 20150206150904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,11 +35,17 @@ ActiveRecord::Schema.define(version: 20150206140514) do
     t.datetime "updated_at"
   end
 
+  create_table "form_1", primary_key: "entry_id", force: true do |t|
+    t.boolean  "enabled"
+    t.string   "resume_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "form_element_dictionary_options", primary_key: "fedo_id", force: true do |t|
     t.integer  "form_id"
     t.integer  "form_element_id"
     t.integer  "element_option_id"
-    t.boolean  "option_is_default"
     t.integer  "export_value"
     t.string   "variable_type"
     t.datetime "created_at"

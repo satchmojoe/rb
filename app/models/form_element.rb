@@ -39,4 +39,5 @@ class FormElement < ActiveRecord::Base
       self.element_name = "element_" + self.element_id.to_s + "_1"
     end
   end
+
 end
