@@ -3,10 +3,11 @@ class Form < ActiveRecord::Base
   after_save :set_admin
   after_save :create_form_values_table
 
-  has_many :users, through: :permissions
   has_many :permissions
+  has_many :users, through: :permissions
+
   has_many :form_elements
-  has_many :element_options
+  has_many :element_options, through: :form_elements
 
   private
   # These values will need to be updated as their functional elements get updated. For example, if
