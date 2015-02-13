@@ -35,13 +35,6 @@ ActiveRecord::Schema.define(version: 20150206150904) do
     t.datetime "updated_at"
   end
 
-  create_table "form_1", primary_key: "entry_id", force: true do |t|
-    t.boolean  "enabled"
-    t.string   "resume_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "form_element_dictionary_options", primary_key: "fedo_id", force: true do |t|
     t.integer  "form_id"
     t.integer  "form_element_id"
