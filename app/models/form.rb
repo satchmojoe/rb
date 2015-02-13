@@ -33,7 +33,6 @@ class Form < ActiveRecord::Base
   end
 
   def create_form_values_table
-    binding.pry
     FormValuesTable.create_values_table self.id
   end
 end
