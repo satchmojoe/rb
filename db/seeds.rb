@@ -33,26 +33,31 @@ end
 
 #Some filler data for dev
 if Rails.env == 'development'
-  puts "Setting up sample form with elements"
-  Permission.create user: User.first, form_id: Form.create.id, edit_entries: true, edit_form: true, view_entries: true
-  form = Permission.last.form
+  for i in 0..4 do
+    puts "Setting up sample form with elements"
+    Permission.create user: User.first, form_id: Form.create.id, edit_entries: true, edit_form: true, view_entries: true
+    form = Permission.last.form
 
-  count = 0
-  ElementType.all.each do |type|
-    FormElement.create form_id: form.id, element_type_id: type.id, element_id: count, element_name: "element_ " + count.to_s + "_1"
-    count += 1
-  end
+    form.form_name = "Seed Form #{i}"
+    form.save
 
-  for type in ['radio','select','checkbox'] do
-    for option in ['dog','cat','spider','sharks with freakin lasers on their head'] do
-      ElementOption.create form_element_id: FormElement.find_by_e_type(type).first.id, option: option
+    count = 0
+    ElementType.all.each do |type|
+      FormElement.create form_id: form.id, element_type_id: type.id, element_id: count, element_name: "element_ " + count.to_s + "_1"
+      count += 1
     end
-  end
 
-  ElementOption.all.each do |eo|
-    eo.uses_dictionary = true
-    eo.save
+    for type in ['radio','select','checkbox'] do
+      for option in ['dog','cat','spider','sharks with freakin lasers on their head'] do
+        ElementOption.create form_element_id: FormElement.where("form_id = ? and element_type_id = ?",form.id, ElementType.where(e_type: type).first.id).first.id, option: option
+      end
+    end
 
-    FormElementDictionaryOption.create form_element_id: eo.form_element_id, element_option_id: eo.id, export_value: ElementOption.where(form_element_id: eo.form_element_id).to_a.index(eo)
+    ElementOption.all.each do |eo|
+      eo.uses_dictionary = true
+      eo.save
+
+      FormElementDictionaryOption.create form_element_id: eo.form_element_id, element_option_id: eo.id, export_value: ElementOption.where(form_element_id: eo.form_element_id).to_a.index(eo)
+    end
   end
 end

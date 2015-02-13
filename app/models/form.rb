@@ -9,6 +9,14 @@ class Form < ActiveRecord::Base
   has_many :form_elements
   has_many :element_options, through: :form_elements
 
+  def json_view
+    fj = JSON.parse self.to_json
+
+    fj[:form_elements] = FormElement.where(form_id: self.form_id).all.map{|eo| eo.json_view}
+
+    fj
+  end
+
   private
   # These values will need to be updated as their functional elements get updated. For example, if
   #   a field is assigned logic, change the value of 'logic_field_enable'

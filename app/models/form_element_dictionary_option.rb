@@ -11,4 +11,8 @@ class FormElementDictionaryOption < ActiveRecord::Base
       self.form_id = ElementOption.find(self.element_option_id).form.id
     end
   end
+
+  def json_view
+    JSON.parse self.to_json
+  end
 end

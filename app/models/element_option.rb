@@ -10,6 +10,11 @@ class ElementOption < ActiveRecord::Base
   delegate :form_id, to: :form_element
 
   has_one :form_element_dictionary_option
+
+  def json_view
+    JSON.parse self.to_json
+  end
+
   private
 
 # Make sure the position is set to one higher than the highest in the form_elements set of element options
