@@ -48,4 +48,11 @@ if Rails.env == 'development'
       ElementOption.create form_element_id: FormElement.find_by_e_type(type).first.id, option: option
     end
   end
+
+  ElementOption.all.each do |eo|
+    eo.uses_dictionary = true
+    eo.save
+
+    FormElementDictionaryOption.create form_element_id: eo.form_element_id, element_option_id: eo.id, export_value: ElementOption.where(form_element_id: eo.form_element_id).to_a.index(eo)
+  end
 end

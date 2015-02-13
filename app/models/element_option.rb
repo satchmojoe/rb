@@ -7,6 +7,7 @@ class ElementOption < ActiveRecord::Base
 
   belongs_to :form_element
   has_one :form, through: :form_element
+  delegate :form_id, to: :form_element
 
   has_one :form_element_dictionary_option
   private
