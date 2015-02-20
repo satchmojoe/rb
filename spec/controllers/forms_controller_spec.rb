@@ -32,7 +32,7 @@ RSpec.describe FormsController, type: :controller do
 
   describe "GET #show" do
     it "returns http success" do
-      get :show
+      get :show, id: Form.first.id
       expect(response).to have_http_status(:success)
     end
   end
