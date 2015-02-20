@@ -41,7 +41,7 @@ for question in ["People support one another in this unit.",
 
   fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 3, element_name: "element_3_1", element_title: question, element_matrix_parent_id: m_p_id
 
-  for opt in [1,2,3,4,5] do
+  for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
@@ -55,7 +55,7 @@ for question in ["My supervisor/manager or department chair says a good word whe
 
   fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 4, element_name: "element_4_1", element_title: question, element_matrix_parent_id: m_p_id
 
-  for opt in [1,2,3,4,5] do
+  for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
@@ -71,7 +71,7 @@ for question in ["We are given feedback about changes put into place based on ev
 
   fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 5, element_name: "element_5_1", element_title: question, element_matrix_parent_id: m_p_id
 
-  for opt in [1,2,3,4,5] do
+  for opt in ["Never","Rarely","Sometimes","Most of the time","Always"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
@@ -84,7 +84,7 @@ for question in ["When a mistake is made, but is caught and corrected before aff
 
   fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 6, element_name: "element_6_1", element_title: question, element_matrix_parent_id: m_p_id
 
-  for opt in [1,2,3,4,5] do
+  for opt in ["Never","Rarely","Sometimes","Most of the time","Always"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
@@ -114,7 +114,7 @@ for question in ["Hospital management provides a work climate that promotes pati
 
   fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 8, element_name: "element_8_1", element_title: question, element_matrix_parent_id: m_p_id
 
-  for opt in [1,2,3,4,5] do
+  for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
