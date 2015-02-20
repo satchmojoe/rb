@@ -12,7 +12,7 @@ end
 
 # Universal seed data
 puts "Setting up initial element_type data"
-for type in ['text','radio','text_area','select','checkbox','date','datetime','number','tel'] do
+for type in ['text','radio','text_area','select','checkbox','date','datetime','number','tel','matrix'] do
   ElementType.create e_type: type
 end
 

@@ -19,6 +19,7 @@ for opt in ["Many different hospital units/No specific unit","Medicine (non-surg
 end
 
 # agree/disagree
+m_p_id = FormElement.last.id + 1
 for question in ["People support one another in this unit.",
             "We have enough staff to handle the workload.",
             "When a lot of work needs to be done quickly, we work together as a team to get the work done.",
@@ -38,7 +39,7 @@ for question in ["People support one another in this unit.",
             "We have patient safety problems in this unit.",
             "Our procedures and systems are good at preventing errors from happening."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 3, element_name: "element_3_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 3, element_name: "element_3_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -46,12 +47,13 @@ for question in ["People support one another in this unit.",
 end
 
 # agree/disagree 2
+m_p_id = FormElement.last.id + 1
 for question in ["My supervisor/manager or department chair says a good word when he/she sees a job done according to established patient safety procedures.",
                 "My supervisor/manager or department chair seriously considers staff suggestions for improving patient safety.",
                 "Whenever pressure builds up, my supervisor/manager or department chair wants us to work faster, even if it means taking shortcuts.",
                 "My supervisor/manager or department chair overlooks patient safety problems that happen over and over."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 4, element_name: "element_4_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 4, element_name: "element_4_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -59,6 +61,7 @@ for question in ["My supervisor/manager or department chair says a good word whe
 end
 
 # agree/disagree 3
+m_p_id = FormElement.last.id + 1
 for question in ["We are given feedback about changes put into place based on event reports.",
                   "Staff will freely speak up if they see something that may negatively affect patient care.",
                   "We are informed about errors that happen in this unit.",
@@ -66,7 +69,7 @@ for question in ["We are given feedback about changes put into place based on ev
                   "In this unit, we discuss ways to prevent errors from happening again.",
                   "Staff are afraid to ask questions when something does not seem right."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 5, element_name: "element_5_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 5, element_name: "element_5_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -74,11 +77,12 @@ for question in ["We are given feedback about changes put into place based on ev
 end
 
 # agree/disagree 4
+m_p_id = FormElement.last.id + 1
 for question in ["When a mistake is made, but is caught and corrected before affecting the patient, how often is this reported?",
                   "When a mistake is made, but has no potential to harm the patient, how often is this reported?",
                   "When a mistake is made that could harm the patient, but does not, how often is this reported?"] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 6, element_name: "element_6_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 6, element_name: "element_6_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -95,6 +99,7 @@ end
 
 
 # agree/disagree 5
+m_p_id = FormElement.last.id + 1
 for question in ["Hospital management provides a work climate that promotes patient safety.",
       "Hospital units do not coordinate well with each other.",
       "Things “fall between the cracks” when transferring patients from one unit to another.",
@@ -107,7 +112,7 @@ for question in ["Hospital management provides a work climate that promotes pati
       "Hospital units work well together to provide the best care for patients.",
       "Shift changes are problematic for patients in this hospital."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 8, element_name: "element_8_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 8, element_name: "element_8_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -127,10 +132,11 @@ for opt in ["a.  No event reports",
 end
 
 # background info
+m_p_id = FormElement.last.id + 1
 for question in ["How long have you worked in this hospital?",
                   "How long have you worked in your current hospital work area/unit?"] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: question
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["a. Less than 1 year",
               "b. 1 to 5 years",
