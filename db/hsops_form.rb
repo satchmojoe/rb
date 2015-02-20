@@ -39,7 +39,7 @@ for question in ["People support one another in this unit.",
             "We have patient safety problems in this unit.",
             "Our procedures and systems are good at preventing errors from happening."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 3, element_name: "element_3_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 3, element_name: "element_3_" + (FormElement.where(:element_id => 3).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -53,7 +53,7 @@ for question in ["My supervisor/manager or department chair says a good word whe
                 "Whenever pressure builds up, my supervisor/manager or department chair wants us to work faster, even if it means taking shortcuts.",
                 "My supervisor/manager or department chair overlooks patient safety problems that happen over and over."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 4, element_name: "element_4_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 4, element_name: "element_4_" + (FormElement.where(:element_id => 4).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -69,7 +69,7 @@ for question in ["We are given feedback about changes put into place based on ev
                   "In this unit, we discuss ways to prevent errors from happening again.",
                   "Staff are afraid to ask questions when something does not seem right."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 5, element_name: "element_5_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 5, element_name: "element_5_" + (FormElement.where(:element_id => 5).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["Never","Rarely","Sometimes","Most of the time","Always"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -82,7 +82,7 @@ for question in ["When a mistake is made, but is caught and corrected before aff
                   "When a mistake is made, but has no potential to harm the patient, how often is this reported?",
                   "When a mistake is made that could harm the patient, but does not, how often is this reported?"] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 6, element_name: "element_6_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 6, element_name: "element_6_" + (FormElement.where(:element_id => 6).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["Never","Rarely","Sometimes","Most of the time","Always"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -112,7 +112,7 @@ for question in ["Hospital management provides a work climate that promotes pati
       "Hospital units work well together to provide the best care for patients.",
       "Shift changes are problematic for patients in this hospital."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 8, element_name: "element_8_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 8, element_name: "element_8_" + (FormElement.where(:element_id => 8).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in ["Strongly Disagree","Disagree","Neither", "Agree","Strongly Agree"] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -132,23 +132,31 @@ for opt in ["a.  No event reports",
 end
 
 # background info
-for question in ["How long have you worked in this hospital?",
-                  "How long have you worked in your current hospital work area/unit?"] do
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: "How long have you worked in your current hospital work area/unit?"
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: question
+for opt in ["a. Less than 1 year",
+            "b. 1 to 5 years",
+            "c. 6 to 10 years",
+            "d. 11 to 15 years",
+            "e. 16 to 20 years",
+            "f.  21 years or more"] do
+  ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 
-  for opt in ["a. Less than 1 year",
-              "b. 1 to 5 years",
-              "c. 6 to 10 years",
-              "d. 11 to 15 years",
-              "e. 16 to 20 years",
-              "f.  21 years or more"] do
-    ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
-  end
+end
+# background info
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 11, element_name: "element_11_1", element_title: "How long have you worked in this hospital?"
+
+for opt in ["a. Less than 1 year",
+            "b. 1 to 5 years",
+            "c. 6 to 10 years",
+            "d. 11 to 15 years",
+            "e. 16 to 20 years",
+            "f.  21 years or more"] do
+  ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
 # hours worked
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 11, element_name: "element_11_1", element_title: "Typically, how many hours per week do you work in this hospital?"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 12, element_name: "element_12_1", element_title: "Typically, how many hours per week do you work in this hospital?"
 
 for opt in ["a.  Less than 20 hours per week",
           "b.  20 to 39 hours per week",
@@ -160,7 +168,7 @@ for opt in ["a.  Less than 20 hours per week",
 end
 
 # position
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 12, element_name: "element_12_1", element_title: "What is your staff position in this hospital?  Select ONE answer that best describes your staff position.", element_choice_has_other: true, element_choice_other_label: "n.  Other, please specify: "
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 13, element_name: "element_13_1", element_title: "What is your staff position in this hospital?  Select ONE answer that best describes your staff position.", element_choice_has_other: true, element_choice_other_label: "n.  Other, please specify: "
 
 for opt in ["a.  Registered Nurse",
 "b.  Physician Assistant/Nurse Practitioner",
@@ -180,7 +188,7 @@ for opt in ["a.  Registered Nurse",
 end
 
 # contact with patients
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 13, element_name: "element_13_1", element_title: "In your staff position, do you typically have direct interaction or contact with patients?"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 14, element_name: "element_14_1", element_title: "In your staff position, do you typically have direct interaction or contact with patients?"
 
 for opt in ["a.  YES, I typically have direct interaction or contact with patients.",
             "b.  NO, I typically do NOT have direct interaction or contact with patients."] do
@@ -189,7 +197,7 @@ for opt in ["a.  YES, I typically have direct interaction or contact with patien
 end
 
 #tenure
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 14, element_name: "element_14_1", element_title: "How long have you worked in your current specialty or profession?"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 15, element_name: "element_15_1", element_title: "How long have you worked in your current specialty or profession?"
 
 for opt in ["a. Less than 1 year",
             "b. 1 to 5 years",
@@ -202,4 +210,4 @@ for opt in ["a. Less than 1 year",
 end
 
 # comments
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 15, element_name: "element_15_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 16, element_name: "element_16_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."

@@ -2,6 +2,7 @@ class FormElement < ActiveRecord::Base
   before_save :set_element_id
   before_save :set_element_name
   before_save :set_position
+  after_save :add_field_to_values_table
 
   belongs_to :form
   belongs_to :element_type
@@ -36,8 +37,10 @@ class FormElement < ActiveRecord::Base
   #   Parent form must be set
   def set_element_id
     if self.form_id
+      if self.element_id.blank?
       # Set the element_id equal to one higher than highest current element on the form, if any
-      self.element_id = 1 + (self.form.form_elements.count > 0 ? self.form.form_elements.map(&:element_id).max : 0)
+        self.element_id = 1 + (self.form.form_elements.count > 0 ? self.form.form_elements.map(&:element_id).max : 0)
+      end
     else
       false
     end
@@ -51,5 +54,9 @@ class FormElement < ActiveRecord::Base
 
   def set_position
     self.element_position ||= self.form.form_elements.count
+  end
+
+  def add_field_to_values_table
+    FormValuesTable.add_field_to_values_table self
   end
 end

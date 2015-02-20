@@ -11,7 +11,9 @@ class FormValuesTable < ActiveRecord::Migration
     end
   end
 
-  def self.insert_values data
-
+  def self.add_field_to_values_table element
+    change_table ('form_' + element.form_id.to_s).to_sym do |t|
+      t.string      element.element_name.to_sym
+    end
   end
 end
