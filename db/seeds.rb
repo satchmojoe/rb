@@ -42,6 +42,7 @@ end
 if Rails.env == 'development' or Rails.env == 'test'
   for i in 0..4 do
     puts "Setting up sample form with elements"
+
     Permission.create user: User.first, form_id: Form.create.id, edit_entries: true, edit_form: true, view_entries: true
     form = Permission.last.form
 

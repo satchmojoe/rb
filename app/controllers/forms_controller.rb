@@ -15,4 +15,7 @@ class FormsController < ApplicationController
 
   def delete
   end
+
+  def submit
+  end
 end
