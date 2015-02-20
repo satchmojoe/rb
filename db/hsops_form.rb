@@ -53,7 +53,7 @@ for question in ["My supervisor/manager or department chair says a good word whe
                 "Whenever pressure builds up, my supervisor/manager or department chair wants us to work faster, even if it means taking shortcuts.",
                 "My supervisor/manager or department chair overlooks patient safety problems that happen over and over."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 4, element_name: "element_4_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 4, element_name: "element_4_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -69,7 +69,7 @@ for question in ["We are given feedback about changes put into place based on ev
                   "In this unit, we discuss ways to prevent errors from happening again.",
                   "Staff are afraid to ask questions when something does not seem right."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 5, element_name: "element_5_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 5, element_name: "element_5_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -82,7 +82,7 @@ for question in ["When a mistake is made, but is caught and corrected before aff
                   "When a mistake is made, but has no potential to harm the patient, how often is this reported?",
                   "When a mistake is made that could harm the patient, but does not, how often is this reported?"] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 6, element_name: "element_6_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 6, element_name: "element_6_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -112,7 +112,7 @@ for question in ["Hospital management provides a work climate that promotes pati
       "Hospital units work well together to provide the best care for patients.",
       "Shift changes are problematic for patients in this hospital."] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 8, element_name: "element_8_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 8, element_name: "element_8_1", element_title: question, element_matrix_parent_id: m_p_id
 
   for opt in [1,2,3,4,5] do
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
@@ -132,11 +132,10 @@ for opt in ["a.  No event reports",
 end
 
 # background info
-m_p_id = FormElement.last.id + 1
 for question in ["How long have you worked in this hospital?",
                   "How long have you worked in your current hospital work area/unit?"] do
 
-  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: question, element_matrix_parent_id: m_p_id
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: question
 
   for opt in ["a. Less than 1 year",
               "b. 1 to 5 years",
