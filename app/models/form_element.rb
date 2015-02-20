@@ -24,7 +24,7 @@ class FormElement < ActiveRecord::Base
   def json_view
     fe = JSON.parse self.to_json
     fe[:element_type] = self.element_type.e_type
-    fe[:options] = ElementOption.where(form_element_id: self.fe_id).all.map{|eo| eo.json_view}
+    fe[:options] = ElementOption.where(form_element_id: self.id).all.map{|eo| eo.json_view}
 
     fe
   end

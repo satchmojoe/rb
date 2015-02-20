@@ -1,7 +1,6 @@
 class CreateForms < ActiveRecord::Migration
   def change
-    create_table :forms, id: false do |t|
-      t.primary_key :form_id
+    create_table :forms do |t|
       t.string :form_name
       t.string :form_description
       t.string :form_tags

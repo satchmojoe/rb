@@ -12,7 +12,7 @@ class Form < ActiveRecord::Base
   def json_view
     fj = JSON.parse self.to_json
 
-    fj[:form_elements] = FormElement.where(form_id: self.form_id).all.map{|eo| eo.json_view}
+    fj[:form_elements] = FormElement.where(form_id: self.id).all.map{|eo| eo.json_view}
 
     fj
   end
@@ -36,7 +36,7 @@ class Form < ActiveRecord::Base
   def set_admin
     form_admins = (Permission.where(form_id: self.id).where(edit_form: true).map(&:user) + User.where(priv_administer: true)).uniq
     if form_admins.length == 0
-      Permisison.create form_id: self_id, user_id: User.where(priv_administer: true).first.id
+      Permission.create form_id: self.id, user_id: User.where(priv_administer: true).first.id
     end
   end
 

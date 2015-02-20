@@ -22,10 +22,17 @@ if Rails.env == 'test'
 end
 
 #Setup the initial user for environments
-if Rails.env == 'development' || Rails.env == 'production'
+if Rails.env == 'development' || Rails.env == 'test'
   name = 'joe' #prompt("Please provide an admin name:").chomp
   email = 'joe@joe.com' # prompt("Please provide an admin email:").chomp
   pw = 'changeme' #prompt("Please provide an admin password:").chomp
+
+  puts "Creating initial admin user"
+  User.create priv_administer: true, priv_new_forms: true, enabled: true, password: pw, password_confirmation: pw, user_fullname: name, user_email: email
+else
+  name = prompt("Please provide an admin name:").chomp
+  email = prompt("Please provide an admin email:").chomp
+  pw = prompt("Please provide an admin password:").chomp
 
   puts "Creating initial admin user"
   User.create priv_administer: true, priv_new_forms: true, enabled: true, password: pw, password_confirmation: pw, user_fullname: name, user_email: email

@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20150206150904) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "element_options", primary_key: "eod_id", force: :cascade do |t|
+  create_table "element_options", force: :cascade do |t|
     t.integer  "form_element_id"
     t.integer  "position"
     t.string   "option"
@@ -29,13 +29,13 @@ ActiveRecord::Schema.define(version: 20150206150904) do
 
   add_index "element_options", ["form_element_id"], name: "index_element_options_on_form_element_id", using: :btree
 
-  create_table "element_types", primary_key: "et_id", force: :cascade do |t|
+  create_table "element_types", force: :cascade do |t|
     t.string   "e_type",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "form_element_dictionary_options", primary_key: "fedo_id", force: :cascade do |t|
+  create_table "form_element_dictionary_options", force: :cascade do |t|
     t.integer  "form_id"
     t.integer  "form_element_id"
     t.integer  "element_option_id"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20150206150904) do
   add_index "form_element_dictionary_options", ["form_element_id"], name: "index_form_element_dictionary_options_on_form_element_id", using: :btree
   add_index "form_element_dictionary_options", ["form_id"], name: "index_form_element_dictionary_options_on_form_id", using: :btree
 
-  create_table "form_elements", primary_key: "fe_id", force: :cascade do |t|
+  create_table "form_elements", force: :cascade do |t|
     t.integer  "form_id",                                          null: false
     t.integer  "element_id",                                       null: false
     t.string   "element_name",                                     null: false
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20150206150904) do
     t.datetime "updated_at"
   end
 
-  create_table "forms", primary_key: "form_id", force: :cascade do |t|
+  create_table "forms", force: :cascade do |t|
     t.string   "form_name"
     t.string   "form_description"
     t.string   "form_tags"
@@ -120,7 +120,7 @@ ActiveRecord::Schema.define(version: 20150206150904) do
     t.datetime "updated_at"
   end
 
-  create_table "permissions", primary_key: "permission_id", force: :cascade do |t|
+  create_table "permissions", force: :cascade do |t|
     t.integer  "form_id"
     t.integer  "user_id"
     t.boolean  "edit_form",    default: false
@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(version: 20150206150904) do
   add_index "permissions", ["form_id"], name: "index_permissions_on_form_id", using: :btree
   add_index "permissions", ["user_id"], name: "index_permissions_on_user_id", using: :btree
 
-  create_table "users", primary_key: "user_id", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "user_email"
     t.string   "password_digest"
     t.string   "user_fullname"
