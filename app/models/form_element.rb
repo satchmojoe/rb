@@ -1,6 +1,7 @@
 class FormElement < ActiveRecord::Base
   before_save :set_element_id
   before_save :set_element_name
+  before_save :set_position
 
   belongs_to :form
   belongs_to :element_type
@@ -46,5 +47,9 @@ class FormElement < ActiveRecord::Base
     unless self.element_name
       self.element_name = "element_" + self.element_id.to_s + "_1"
     end
+  end
+
+  def set_position
+    self.element_position ||= self.form.form_elements.count
   end
 end
