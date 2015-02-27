@@ -21,6 +21,14 @@ class FormElement < ActiveRecord::Base
     end
   end
 
+  def json_view
+    fe = JSON.parse self.to_json
+    fe[:element_type] = self.element_type.e_type
+    fe[:options] = ElementOption.where(form_element_id: self.fe_id).all.map{|eo| eo.json_view}
+
+    fe
+  end
+
   private
 
   # Set the element_id to be next number for the parent form
@@ -39,5 +47,4 @@ class FormElement < ActiveRecord::Base
       self.element_name = "element_" + self.element_id.to_s + "_1"
     end
   end
-
 end

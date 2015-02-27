@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  post 'forms/create'
+
+  post 'forms/update'
+
+  post 'forms/delete'
+
+  get 'forms/index', defaults: {format: :json}
+
+  get 'forms/show/:id' => 'forms#show', defaults: {format: :json}
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

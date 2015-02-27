@@ -37,8 +37,8 @@ RSpec.configure do |config|
   config.before(:suite) do
     begin
       DatabaseCleaner.start
-      Rails.application.load_seed
       FactoryGirl.lint
+      Rails.application.load_seed
     ensure
       DatabaseCleaner.clean
     end
