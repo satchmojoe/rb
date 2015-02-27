@@ -35,12 +35,18 @@ class Form < ActiveRecord::Base
         responses.push FormElement.create_from_submission fe.to_hash
       end
 
-      Form.find(new_form.id).json_view
+      # Propogate errors up
+      if responses.compact.empty?
+        Form.find(new_form.id).json_view
+      else
+        raise responses
+      end
     rescue Exception => e
+      Utils.clean_up_failed_post new_form.id
+
       Rails.logger.error e.message
       Rails.logger.error e.backtrace
-
-      return {error: {form_error: e.message}}
+      return {error: {form_element: e.message, form_element_errors: responses.compact}}
     end
   end
 

@@ -40,7 +40,10 @@ class ElementOption < ActiveRecord::Base
 
       return {error: {element_option: e.message}}
     end
+
+    nil
   end
+
   private
 
 # Make sure the position is set to one higher than the highest in the form_elements set of element options

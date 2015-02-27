@@ -33,6 +33,7 @@ class FormElement < ActiveRecord::Base
 
 # Remove the fields that need to be recursively built or are autofilled, then make the new object
   def self.create_from_submission form_element
+    responses = []
     begin
       new_options = form_element['options']
       element_type = form_element['element_type']
@@ -46,9 +47,11 @@ class FormElement < ActiveRecord::Base
       new_fe = FormElement.new form_element
       new_fe.element_type_id = ElementType.find_by_e_type(element_type).id
 
+      new_fe.set_element_id
+      new_fe.set_element_name
+      new_fe.set_position
       new_fe.save
 
-      responses = []
       if !new_options.blank?
         new_options.each do |no|
           no['form_element_id'] = new_fe.id
@@ -56,16 +59,19 @@ class FormElement < ActiveRecord::Base
         end
       end
 
-      FormElement.find(new_fe.id).json_view
+      # Propogate errors up
+      if !responses.compact.empty?
+        raise responses
+      end
+
     rescue Exception => e
       Rails.logger.error e.message
       Rails.logger.error e.backtrace
-
-      return {error: {form_element: e.message}}
+      return {error: {form_element: e.message, element_option_errors: responses}}
     end
-  end
 
-  private
+    nil
+  end
 
   # Set the element_id to be next number for the parent form
   #   Parent form must be set
