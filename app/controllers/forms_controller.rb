@@ -17,5 +17,6 @@ class FormsController < ApplicationController
   end
 
   def submit
+    Form.create_from_submission params[:form].to_hash
   end
 end

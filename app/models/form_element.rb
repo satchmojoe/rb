@@ -31,6 +31,40 @@ class FormElement < ActiveRecord::Base
     fe
   end
 
+# Remove the fields that need to be recursively built or are autofilled, then make the new object
+  def self.create_from_submission form_element
+    begin
+      new_options = form_element['options']
+      element_type = form_element['element_type']
+
+      form_element.delete 'options'
+      form_element.delete 'id'
+      form_element.delete 'created_at'
+      form_element.delete 'updated_at'
+      form_element.delete 'element_type'
+
+      new_fe = FormElement.new form_element
+      new_fe.element_type_id = ElementType.find_by_e_type(element_type).id
+
+      new_fe.save
+
+      responses = []
+      if !new_options.blank?
+        new_options.each do |no|
+          no['form_element_id'] = new_fe.id
+          responses.push ElementOption.create_from_submission no.to_hash
+        end
+      end
+
+      FormElement.find(new_fe.id).json_view
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+
+      return {error: {form_element: e.message}}
+    end
+  end
+
   private
 
   # Set the element_id to be next number for the parent form

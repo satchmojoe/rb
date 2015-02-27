@@ -17,6 +17,33 @@ class Form < ActiveRecord::Base
     fj
   end
 
+# Remove the fields that need to be recursively built or are autofilled, then make the new object
+  def self.create_from_submission form
+    begin
+      form_elements = form['form_elements']
+      form.delete 'form_elements'
+      form.delete 'id'
+      form.delete 'created_at'
+      form.delete 'updated_at'
+      new_form = Form.new form
+
+      new_form.save
+
+      responses = []
+      form_elements.each do |fe|
+        fe['form_id'] = new_form.id
+        responses.push FormElement.create_from_submission fe.to_hash
+      end
+
+      Form.find(new_form.id).json_view
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+
+      return {error: {form_error: e.message}}
+    end
+  end
+
   private
   # These values will need to be updated as their functional elements get updated. For example, if
   #   a field is assigned logic, change the value of 'logic_field_enable'
