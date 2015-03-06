@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-# Create model instances for testing and fast bootstrapping
-gem 'factory_girl', '4.5.0'
 # Used for encryption
 gem 'bcrypt','3.1.9'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -32,6 +30,8 @@ gem 'spring',        group: :development
 group :development, :test do
   gem 'rspec-rails'
   gem 'pry-rails'
+# Create model instances for testing and fast bootstrapping
+  gem 'factory_girl_rails', '4.5.0'
 end
 
 group :test do

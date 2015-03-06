@@ -2,9 +2,13 @@ require 'rails_helper'
 
 RSpec.describe FormsController, type: :controller do
 
+  before :each do
+    @form = FactoryGirl.create :form
+  end
+
   describe "GET #create" do
     it "returns http success" do
-      get :create
+      post :create, form: JSON.parse(@form.to_json).to_hash
       expect(response).to have_http_status(:success)
     end
   end

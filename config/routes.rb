@@ -9,8 +9,6 @@ Rails.application.routes.draw do
 
   get 'form_values/delete'
 
-  post 'forms' => 'forms#create'
-
   put 'forms/:id' => 'forms#update'
 
   post 'forms/delete'
@@ -19,7 +17,7 @@ Rails.application.routes.draw do
 
   get 'forms/show/:id' => 'forms#show', defaults: {format: :json}
 
-  post 'forms/submit'
+  post 'forms' => 'forms#create'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
