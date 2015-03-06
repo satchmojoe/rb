@@ -211,3 +211,18 @@ end
 
 # comments
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 16, element_name: "element_16_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."
+
+# network id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 17, element_name: "element_17_1", element_title: "Network Id", hidden: true
+
+# hospital or institution
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 18, element_name: "element_18_1", element_title: "Hospital or Institution", hidden: true
+
+# primary language
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
+
+# micu/sicu
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
+
+# surgey area
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 21, element_name: "element_21_1", element_title: "If you choose surgery, please indicate where you spend most of your work time:"

@@ -1,7 +1,17 @@
 Rails.application.routes.draw do
-  post 'forms/create'
+  get 'form_values/index'
 
-  post 'forms/update'
+  get 'form_values/show'
+
+  post 'forms/:form_id/entry' => 'form_values#create'
+
+  put 'forms/:form_id/entry/:entry_id' => 'form_values#update'
+
+  get 'form_values/delete'
+
+  post 'forms' => 'forms#create'
+
+  put 'forms/:id' => 'forms#update'
 
   post 'forms/delete'
 
