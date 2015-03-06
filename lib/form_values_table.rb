@@ -23,7 +23,7 @@ class FormValuesTable < ActiveRecord::Migration
     data  = []
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
-        values['_json'].each do |value|
+        values.each do |value|
           data.push value['value']
           columns.push value['name']
         end
@@ -41,7 +41,7 @@ class FormValuesTable < ActiveRecord::Migration
 
   def self.validate_columns_from_values form, values
     columns = FormValuesTable.get_forms_value_columns form
-    value_names = values['_json'].map{|e| e['name']}
+    value_names = values.map{|e| e['name']}
 
     # Make sure every value submitted has a column in the DB
     (value_names - columns).empty?
@@ -49,7 +49,23 @@ class FormValuesTable < ActiveRecord::Migration
 
 # Get the columns from the form_values table for a given form
   def self.get_forms_value_columns form
-    res       = ActiveRecord::Base.connection.execute( "select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'form_#{form}'")
+    res = ActiveRecord::Base.connection.execute( "select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'form_#{form}'")
     JSON.parse(res.to_json).map{|e| e['column_name']}
+  end
+
+  def self.get_all_values form
+    if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s)
+      JSON.parse ActiveRecord::Base.connection.execute( "select * from form_#{form}").to_json
+    else
+      {error: "no value table for that form id"}
+    end
+  end
+
+  def self.get_single_entry_values form, entry
+    if entry and form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s)
+      JSON.parse ActiveRecord::Base.connection.execute( "select * from form_#{form} where id = #{entry}").to_json
+    else
+      {error: "no entries for that form id"}
+    end
   end
 end

@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   post 'forms/:form_id/entry' => 'form_values#create'
 
+  get 'forms/:form_id/entries' => 'form_values#index'
+
+  get 'forms/:form_id/entries/:entry_id' => 'form_values#show'
+
   put 'forms/:form_id/entry/:entry_id' => 'form_values#update'
 
   get 'form_values/delete'
