@@ -30,9 +30,11 @@ class Form < ActiveRecord::Base
       new_form.save
 
       responses = []
-      form_elements.each do |fe|
-        fe['form_id'] = new_form.id
-        responses.push FormElement.create_from_submission fe.to_hash
+      if form_elements and form_elements.length > 0
+        form_elements.each do |fe|
+          fe['form_id'] = new_form.id
+          responses.push FormElement.create_from_submission fe.to_hash
+        end
       end
 
       # Propogate errors up
