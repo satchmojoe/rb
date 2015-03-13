@@ -15,4 +15,8 @@ class FormsController < ApplicationController
 
   def delete
   end
+
+  def submit
+    render json: {response: Form.create_from_submission(params[:form].to_hash)}
+  end
 end

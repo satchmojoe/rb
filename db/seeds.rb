@@ -12,7 +12,7 @@ end
 
 # Universal seed data
 puts "Setting up initial element_type data"
-for type in ['text','radio','text_area','select','checkbox','date','datetime','number','tel'] do
+for type in ['text','radio','text_area','select','checkbox','date','datetime','number','tel','matrix'] do
   ElementType.create e_type: type
 end
 
@@ -22,10 +22,17 @@ if Rails.env == 'test'
 end
 
 #Setup the initial user for environments
-if Rails.env == 'development' || Rails.env == 'production'
+if Rails.env == 'development' || Rails.env == 'test'
   name = 'joe' #prompt("Please provide an admin name:").chomp
   email = 'joe@joe.com' # prompt("Please provide an admin email:").chomp
   pw = 'changeme' #prompt("Please provide an admin password:").chomp
+
+  puts "Creating initial admin user"
+  User.create priv_administer: true, priv_new_forms: true, enabled: true, password: pw, password_confirmation: pw, user_fullname: name, user_email: email
+else
+  name = prompt("Please provide an admin name:").chomp
+  email = prompt("Please provide an admin email:").chomp
+  pw = prompt("Please provide an admin password:").chomp
 
   puts "Creating initial admin user"
   User.create priv_administer: true, priv_new_forms: true, enabled: true, password: pw, password_confirmation: pw, user_fullname: name, user_email: email
@@ -35,6 +42,7 @@ end
 if Rails.env == 'development' or Rails.env == 'test'
   for i in 0..4 do
     puts "Setting up sample form with elements"
+
     Permission.create user: User.first, form_id: Form.create.id, edit_entries: true, edit_form: true, view_entries: true
     form = Permission.last.form
 

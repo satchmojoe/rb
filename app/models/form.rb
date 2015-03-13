@@ -12,9 +12,42 @@ class Form < ActiveRecord::Base
   def json_view
     fj = JSON.parse self.to_json
 
-    fj[:form_elements] = FormElement.where(form_id: self.form_id).all.map{|eo| eo.json_view}
+    fj[:form_elements] = FormElement.where(form_id: self.id).all.map{|eo| eo.json_view}
 
     fj
+  end
+
+# Remove the fields that need to be recursively built or are autofilled, then make the new object
+  def self.create_from_submission form
+    begin
+      form_elements = form['form_elements']
+      form.delete 'form_elements'
+      form.delete 'id'
+      form.delete 'created_at'
+      form.delete 'updated_at'
+      new_form = Form.new form
+
+      new_form.save
+
+      responses = []
+      form_elements.each do |fe|
+        fe['form_id'] = new_form.id
+        responses.push FormElement.create_from_submission fe.to_hash
+      end
+
+      # Propogate errors up
+      if responses.compact.empty?
+        Form.find(new_form.id).json_view
+      else
+        raise responses
+      end
+    rescue Exception => e
+      Utils.clean_up_failed_post new_form.id
+
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+      return {error: {form_element: e.message, form_element_errors: responses.compact}}
+    end
   end
 
   private
@@ -36,7 +69,7 @@ class Form < ActiveRecord::Base
   def set_admin
     form_admins = (Permission.where(form_id: self.id).where(edit_form: true).map(&:user) + User.where(priv_administer: true)).uniq
     if form_admins.length == 0
-      Permisison.create form_id: self_id, user_id: User.where(priv_administer: true).first.id
+      Permission.create form_id: self.id, user_id: User.where(priv_administer: true).first.id
     end
   end
 

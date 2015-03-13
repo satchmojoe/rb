@@ -15,6 +15,35 @@ class ElementOption < ActiveRecord::Base
     JSON.parse self.to_json
   end
 
+# Remove the fields that need to be recursively built or are autofilled, then make the new object
+  def self.create_from_submission option
+    begin
+      option.delete 'id'
+      option.delete 'created_at'
+      option.delete 'updated_at'
+
+      new_eo = ElementOption.new option
+
+# THIS IS A TEMPORARY PLACEHOLDER
+# FUTURE FUNTIONALITY NEEDED TO HANDLE THIS
+      new_eo.uses_dictionary = false
+#**************************************
+#**************************************
+#**************************************
+
+      new_eo.save
+
+      ElementOption.find(new_eo.id).json_view
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+
+      return {error: {element_option: e.message}}
+    end
+
+    nil
+  end
+
   private
 
 # Make sure the position is set to one higher than the highest in the form_elements set of element options

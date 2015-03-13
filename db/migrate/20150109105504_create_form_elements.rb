@@ -1,7 +1,6 @@
 class CreateFormElements < ActiveRecord::Migration
   def change
-    create_table :form_elements, id: false do |t|
-      t.primary_key :fe_id
+    create_table :form_elements do |t|
       t.integer     :form_id, null: false
       t.integer     :element_id, null: false
       t.string      :element_name, null: false

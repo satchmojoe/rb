@@ -1,7 +1,6 @@
 class CreateElementOptions < ActiveRecord::Migration
   def change
-    create_table :element_options, id: false do |t|
-      t.primary_key :eod_id
+    create_table :element_options do |t|
       t.references :form, index: true
       t.references :form_element, index: true
       t.integer :position
