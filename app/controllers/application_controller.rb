@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 #  protect_from_forgery with: :exception
 
   def authorize_user
-    if request.headers.env["HTTP_USER_ID"] != "dfasdfasdf234234wfdgsadfas345234dasfsdfdsf"
+    if Rails.env != 'development' &&  request.headers.env["HTTP_USER_ID"] != "dfasdfasdf234234wfdgsadfas345234dasfsdfdsf"
       render json: {error: "not authorized"}
     end
   end

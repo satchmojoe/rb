@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   post 'forms' => 'forms#create'
 
   delete 'forms/delete'
+
 end

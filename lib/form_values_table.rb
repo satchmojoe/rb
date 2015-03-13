@@ -49,7 +49,7 @@ class FormValuesTable < ActiveRecord::Migration
 
 # Get the columns from the form_values table for a given form
   def self.get_forms_value_columns form
-    res = ActiveRecord::Base.connection.execute( "select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = 'form_#{form}'")
+    res = ActiveRecord::Base.connection.execute( "select element_position, column_name from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position")
     JSON.parse(res.to_json).map{|e| e['column_name']}
   end
 
@@ -57,12 +57,15 @@ class FormValuesTable < ActiveRecord::Migration
 # Filters: hash of columns and values to filter by
 #   [{col: 'element_1_1', val:'fred'}] => pull back entries where element_1_1 has value 'fred'
   def self.get_all_values form, filters
-    query_string = FormValuesTable.set_query_string form, filters
+    columns       = FormValuesTable.get_forms_value_columns form
+    query_string  = FormValuesTable.set_query_string form, filters, columns
 
     Rails.logger.debug "Query string is: " + query_string
     begin
       if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
-        JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+        data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+        titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
+        JSON.parse({data: data, titles: titles}.to_json)
       else
         {error: "no value table for that form id"}
       end
@@ -73,11 +76,11 @@ class FormValuesTable < ActiveRecord::Migration
     end
   end
 
-  def self.set_query_string form, filters
+  def self.set_query_string form, filters, columns
     query_string = ""
     # Sanity check to make sure we're given a number
     if form.to_s.match(/[a-zA-Z]/) == nil
-      query_string.concat "select * from form_#{form}"
+      query_string.concat "select #{columns.join(", ")} from form_#{form}"
     end
 
     if filters.class == Array and !filters.empty?
