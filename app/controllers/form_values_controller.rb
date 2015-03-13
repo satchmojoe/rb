@@ -1,4 +1,6 @@
 class FormValuesController < ApplicationController
+  before_filter :authorize_user
+
   def index
     filters = split_out_filters
     render json: FormValuesTable.get_all_values(params['form_id'], filters)

@@ -1,4 +1,6 @@
 class FormsController < ApplicationController
+  before_filter :authorize_user
+
   def index
     render json: {forms: Form.all.map{|f| f.json_view} }
   end
