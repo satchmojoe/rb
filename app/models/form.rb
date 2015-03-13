@@ -26,6 +26,10 @@ class Form < ActiveRecord::Base
       end
     end
 
+    form_data['form_elements'].each do |data|
+      FormElement.update_from_submission data
+    end
+
     Form.find(form_data['id']).json_view
   end
 

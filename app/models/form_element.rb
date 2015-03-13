@@ -31,6 +31,40 @@ class FormElement < ActiveRecord::Base
     fe
   end
 
+  def self.update_from_submission form_element_data
+    if form_element_data['id']
+      form_element = FormElement.find form_element_data['id']
+
+      form_element_data.each do |k,v|
+        if k != 'id' and k != "created_at" and k != 'form_id' and k != 'options' and k != 'element_type'
+          FormElement.update(form_element_data['id'], k => v)
+        end
+      end
+
+      form_element.element_type_id = ElementType.find_by_e_type(form_element_data['element_type']).id
+
+      form_element.element_options.delete_all
+
+      FormElement.setup_options form_element, form_element_data['options']
+
+      form_element.save
+    else
+      FormElement.create_from_submission form_element_data
+    end
+
+    nil
+  end
+
+  def self.setup_options fe, new_options, responses = []
+    if !new_options.blank?
+      new_options.each do |no|
+        no['form_element_id'] = fe.id
+        responses.push ElementOption.create_from_submission no.to_hash
+      end
+    end
+
+    responses
+  end
 # Remove the fields that need to be recursively built or are autofilled, then make the new object
   def self.create_from_submission form_element
     responses = []
@@ -52,12 +86,16 @@ class FormElement < ActiveRecord::Base
       new_fe.set_position
       new_fe.save
 
+=begin
       if !new_options.blank?
         new_options.each do |no|
           no['form_element_id'] = new_fe.id
           responses.push ElementOption.create_from_submission no.to_hash
         end
       end
+=end
+      # This is a refactor to extract out this to a method
+      responses = FormElement.setup_options new_fe, new_options, responses
 
       # Propogate errors up
       if !responses.compact.empty?
