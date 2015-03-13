@@ -14,6 +14,7 @@ class FormsController < ApplicationController
   end
 
   def update
+    render json: {response: Form.update_from_submission(params[:form].to_hash)}
   end
 
   def delete

@@ -17,6 +17,18 @@ class Form < ActiveRecord::Base
     fj
   end
 
+  def self.update_from_submission form_data
+    form = Form.find form_data['id']
+
+    form_data.each do |k,v|
+      if k != 'id' and k != "created_at" and k != 'form_elements'
+        Form.update(form_data['id'], k => v)
+      end
+    end
+
+    Form.find(form_data['id']).json_view
+  end
+
 # Remove the fields that need to be recursively built or are autofilled, then make the new object
   def self.create_from_submission form
     begin
