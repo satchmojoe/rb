@@ -1,29 +1,23 @@
 Rails.application.routes.draw do
-  get 'form_values/index'
-
-  get 'form_values/show'
-
-  post 'forms/:form_id/entry' => 'form_values#create'
-
   get 'forms/:form_id/entries' => 'form_values#index'
 
-  get 'forms/:form_id/entries/:entry_id' => 'form_values#show'
+  get 'forms/:form_id/entry/:entry_id' => 'form_values#show'
 
   put 'forms/:form_id/entry/:entry_id' => 'form_values#update'
 
-  get 'form_values/delete'
+  post 'forms/:form_id/entry' => 'form_values#create'
+
+  delete 'form_values/delete'
 
   put 'forms/:id' => 'forms#update'
 
-  get 'forms/:id' => 'forms#show'
-
-  post 'forms/delete'
+  get 'forms/:id' => 'forms#show', defaults: {format: :json}
 
   get 'forms/index', defaults: {format: :json}
 
-  get 'forms/show/:id' => 'forms#show', defaults: {format: :json}
-
   post 'forms' => 'forms#create'
+
+  delete 'forms/delete'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
