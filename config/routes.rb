@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   put 'forms/:id' => 'forms#update'
 
+  get 'forms/:id' => 'forms#show'
+
   post 'forms/delete'
 
   get 'forms/index', defaults: {format: :json}
