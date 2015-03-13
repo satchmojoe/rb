@@ -1,6 +1,7 @@
 class FormValuesController < ApplicationController
   def index
-    render json: FormValuesTable.get_all_values(params['form_id'])
+    filters = split_out_filters
+    render json: FormValuesTable.get_all_values(params['form_id'], filters)
   end
 
   def show
@@ -16,4 +17,17 @@ class FormValuesController < ApplicationController
 
   def delete
   end
+
+  def split_out_filters
+    filters = []
+    begin
+      URI::parse(request.url).query.split("&").each{|e| filters.push( {col: e.split('=')[0], val: e.split('=')[1]})  }
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+    end
+    Rails.logger.debug "Filters are : " + filters.to_s
+    filters
+  end
+
 end

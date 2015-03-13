@@ -53,12 +53,44 @@ class FormValuesTable < ActiveRecord::Migration
     JSON.parse(res.to_json).map{|e| e['column_name']}
   end
 
-  def self.get_all_values form
-    if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s)
-      JSON.parse ActiveRecord::Base.connection.execute( "select * from form_#{form}").to_json
-    else
-      {error: "no value table for that form id"}
+# Form: the form id
+# Filters: hash of columns and values to filter by
+#   [{col: 'element_1_1', val:'fred'}] => pull back entries where element_1_1 has value 'fred'
+  def self.get_all_values form, filters
+    query_string = FormValuesTable.set_query_string form, filters
+
+    Rails.logger.debug "Query string is: " + query_string
+    begin
+      if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
+        JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+      else
+        {error: "no value table for that form id"}
+      end
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+      {error: "error in query string, check params", message: e.message}
     end
+  end
+
+  def self.set_query_string form, filters
+    query_string = ""
+    # Sanity check to make sure we're given a number
+    if form.to_s.match(/[a-zA-Z]/) == nil
+      query_string.concat "select * from form_#{form}"
+    end
+
+    if filters.class == Array and !filters.empty?
+      query_string.concat " where "
+
+      filters.each do |filter|
+        query_string.concat (" " + filter[:col] + " = '" + filter[:val] + "' and ")
+      end
+
+      query_string = query_string[0..-5]
+
+    end
+    query_string
   end
 
   def self.get_single_entry_values form, entry
