@@ -212,11 +212,11 @@ end
 # comments
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 16, element_name: "element_16_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."
 
-# network id
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 17, element_name: "element_17_1", element_title: "Network Id", hidden: true
+# unit_id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 17, element_name: "element_17_1", element_title: "unit_id", hidden: true
 
-# hospital or institution
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 18, element_name: "element_18_1", element_title: "Hospital or Institution", hidden: true
+# hospital_id hospital or institution
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 18, element_name: "element_18_1", element_title: "hospital_id", hidden: true
 
 # primary language
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
@@ -226,3 +226,12 @@ fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e
 
 # surgey area
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 21, element_name: "element_21_1", element_title: "If you choose surgery, please indicate where you spend most of your work time:"
+
+# department_id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 22, element_name: "element_22_1", element_title: "department_id", hidden: true
+
+# health_system_id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 23, element_name: "element_23_1", element_title: "health_system_id", hidden: true
+
+# coordinating_entity_id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 23, element_name: "element_24_1", element_title: "coordinating_entity_id", hidden: true
