@@ -12,12 +12,21 @@ for lang in ["Arabic","English","Chinese","French","Italian","Korean","Spanish",
   ElementOption.create form_element_id: fe.id, option: lang, position: fe.element_options.count
 end
 
+# primary language
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
+
 # area/unit question
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 2, element_name: "element_2_1", element_title: "What is your primary work area or unit in this hospital? Select ONE answer."
 
 for opt in ["Many different hospital units/No specific unit","Medicine (non-surgical)","Surgery ","Obstetrics","Pediatrics","Emergency department","Intensive care unit ICU (any type)","Psychiatry/mental health","Rehabilitation","Pharmacy","Laboratory","Radiology","Anesthesiology","not  primarily in Surgery","Other"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
+
+# micu/sicu
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
+
+# surgey area
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 21, element_name: "element_21_1", element_title: "If you choose surgery, please indicate where you spend most of your work time:"
 
 # agree/disagree
 m_p_id = FormElement.last.id + 1
@@ -218,15 +227,6 @@ fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e
 
 # hospital_id hospital or institution
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 18, element_name: "element_18_1", element_title: "hospital_id", hidden: true
-
-# primary language
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
-
-# micu/sicu
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
-
-# surgey area
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 21, element_name: "element_21_1", element_title: "If you choose surgery, please indicate where you spend most of your work time:"
 
 # department_id
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 22, element_name: "element_22_1", element_title: "department_id", hidden: true
