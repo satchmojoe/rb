@@ -65,6 +65,9 @@ for question in ["People support one another in this unit.",
   end
 end
 
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 26, element_name: "element_26_1", element_title: "SECTION B: Your Supervisor/Manager", element_tool_tip: "Please indicate your agreement or disagreement with the following statements about your immediate supervisor/manager or person to whom you directly report."
+
 # agree/disagree 2
 m_p_id = FormElement.last.id + 1
 for question in ["My supervisor/manager or department chair says a good word when he/she sees a job done according to established patient safety procedures.",
@@ -78,6 +81,9 @@ for question in ["My supervisor/manager or department chair says a good word whe
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 27, element_name: "element_27_1", element_title: "SECTION C: Communications", element_tool_tip: "How often do the following things happen in your work area/unit?. Think about your hospital work area/unit..."
 
 # agree/disagree 3
 m_p_id = FormElement.last.id + 1
@@ -95,6 +101,9 @@ for question in ["We are given feedback about changes put into place based on ev
   end
 end
 
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 28, element_name: "element_28_1", element_title: "SECTION D: Frequency of Events Reported", element_tool_tip: "In your hospital work area/unit, when the following mistakes happen, how often are they reported?"
+
 # agree/disagree 4
 m_p_id = FormElement.last.id + 1
 for question in ["When a mistake is made, but is caught and corrected before affecting the patient, how often is this reported?",
@@ -108,6 +117,9 @@ for question in ["When a mistake is made, but is caught and corrected before aff
   end
 end
 
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 29, element_name: "element_29_1", element_title: "SECTION E: Patient Safety Grade", element_tool_tip: "Please give your work area/unit in this hospital an overall grade on patient safety."
+
 # patient saftey grade
 m_p_id = FormElement.last.id + 1
 for question in ["Please give your work area/unit in this hospital an overall grade on patient safety."] do
@@ -118,6 +130,10 @@ for question in ["Please give your work area/unit in this hospital an overall gr
     ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
   end
 end
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 30, element_name: "element_30_1", element_title: "SECTION F: Your Hospital", element_tool_tip: "Please indicate your agreement or disagreement with the following statements about your hospital."
+
 
 # agree/disagree 5
 m_p_id = FormElement.last.id + 1
@@ -140,6 +156,10 @@ for question in ["Hospital management provides a work climate that promotes pati
   end
 end
 
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 31, element_name: "element_31_1", element_title: "SECTION G: Number of Events Reported"
+
 # number of events reported
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 9, element_name: "element_9_1", element_title: "In the past 12 months, how many event reports have you filled out and submitted?"
 
@@ -151,6 +171,9 @@ for opt in ["No event reports",
             "21 event reports or more"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 32, element_name: "element_32_1", element_title: "SECTION H: Background Information", element_tool_tip: "This information will help in the analysis of the survey results."
 
 # background info
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: "How long have you worked in your current hospital work area/unit?"
@@ -230,6 +253,9 @@ for opt in ["Less than 1 year",
 
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 33, element_name: "element_33_1", element_title: "SECTION I: Your Comments"
 
 # comments
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 16, element_name: "element_16_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."
