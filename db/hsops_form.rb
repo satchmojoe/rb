@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 Permission.create user: User.first, form_id: Form.create.id, edit_entries: true, edit_form: true, view_entries: true
 form = Permission.last.form
 
@@ -235,3 +236,6 @@ fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e
 
 # coordinating_entity_id
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 23, element_name: "element_24_1", element_title: "coordinating_entity_id", hidden: true
+
+# administered_survey_id
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("number").id, element_id: 24, element_name: "element_25_1", element_title: "administered_survey_id", hidden: true
