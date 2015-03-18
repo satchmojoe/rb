@@ -164,7 +164,7 @@ end
 
 
 # section information
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 31, element_name: "element_31_1", element_title: "SECTION G: Number of Events Reported"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 31, element_name: "element_31_1", element_title: "SECTION G: Number of Events Reported", element_tool_tip: ""
 
 # number of events reported
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 9, element_name: "element_9_1", element_title: "In the past 12 months, how many event reports have you filled out and submitted?"
@@ -264,7 +264,7 @@ for opt in ["Less than 1 year",
 end
 
 # section information
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 33, element_name: "element_33_1", element_title: "SECTION I: Your Comments"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 33, element_name: "element_33_1", element_title: "SECTION I: Your Comments", element_tool_tip: ""
 
 # comments
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 16, element_name: "element_16_1", element_title: "Please feel free to write any comments about patient safety, error, or event reporting in your hospital."
