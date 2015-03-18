@@ -13,24 +13,29 @@ for lang in ["Arabic","English","Chinese","French","Italian","Korean","Spanish",
 end
 
 # primary language
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
 
+for lang in ["Yes","No","Not Applicable"] do
+  ElementOption.create form_element_id: fe.id, option: lang, position: fe.element_options.count
+end
 
 # section information
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 25, element_name: "element_2_1", element_title: "SECTION A: Your Work Area/Unit", element_tool_tip: "In this survey, think of your “unit” as the work area, department, or clinical area of the hospital where you spend most of your work time or provide most of your clinical services."
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 25, element_name: "element_25_1", element_title: "SECTION A: Your Work Area/Unit", element_tool_tip: "In this survey, think of your “unit” as the work area, department, or clinical area of the hospital where you spend most of your work time or provide most of your clinical services."
 
 # area/unit question
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 2, element_name: "element_2_1", element_title: "What is your primary work area or unit in this hospital? Select ONE answer."
 
-for opt in ["Many different hospital units/No specific unit","Medicine (non-surgical)","Surgery ","Obstetrics","Pediatrics","Emergency department","Intensive care unit ICU (any type)","Psychiatry/mental health","Rehabilitation","Pharmacy","Laboratory","Radiology","Anesthesiology","not  primarily in Surgery","Other"] do
+for opt in ["Many different hospital units/No specific unit","Medicine (non-surgical)","Surgery ","Obstetrics","Pediatrics","Emergency department","Intensive care unit (ICU) - any type","Psychiatry/mental health","Rehabilitation","Pharmacy","Laboratory","Radiology","Anesthesiology","Not primarily in Surgery","Other"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
-# micu/sicu
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
 
-# surgey area
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 21, element_name: "element_21_1", element_title: "If you choose surgery, please indicate where you spend most of your work time:"
+# micu/sicu
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
+
+for opt in ["Many different hospital units/No specific unit","MICU/SICU: Combined medical/surgical ICU","CCU: Coronary Care Unit","CVICU: Cardio-vascular ICU","MICU: Medical ICU","NICU: Neonatal ICU","N-ICU: Neuro ICU","PICU: Pediatric ICU","SICU: Surgical ICU","Other: Please explain:"] do
+  ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
+end
 
 # agree/disagree
 m_p_id = FormElement.last.id + 1
@@ -104,13 +109,15 @@ for question in ["When a mistake is made, but is caught and corrected before aff
 end
 
 # patient saftey grade
-fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 7, element_name: "element_7_1", element_title: "Please give your work area/unit in this hospital an overall grade on patient safety."
+m_p_id = FormElement.last.id + 1
+for question in ["Please give your work area/unit in this hospital an overall grade on patient safety."] do
 
-for opt in ["E","D","C","B","A"] do
-  ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
+  fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("matrix").id, element_id: 4, element_name: "element_4_" + (FormElement.where(:element_id => 4).count + 1).to_s, element_title: question, element_matrix_parent_id: m_p_id
+
+  for opt in ["E","D","C","B","A"] do
+    ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
+  end
 end
-
-
 
 # agree/disagree 5
 m_p_id = FormElement.last.id + 1
@@ -136,67 +143,68 @@ end
 # number of events reported
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 9, element_name: "element_9_1", element_title: "In the past 12 months, how many event reports have you filled out and submitted?"
 
-for opt in ["a.  No event reports",
-            "b.  1 to 2 event reports",
-            "c.  3 to 5 event reports",
-            "d.  6 to 10 event reports",
-            "e.  11 to 20 event reports",
-            "f.   21 event reports or more"] do
+for opt in ["No event reports",
+            "1 to 2 event reports",
+            "3 to 5 event reports",
+            "6 to 10 event reports",
+            "11 to 20 event reports",
+            "21 event reports or more"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
 # background info
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 10, element_name: "element_10_1", element_title: "How long have you worked in your current hospital work area/unit?"
 
-for opt in ["a. Less than 1 year",
-            "b. 1 to 5 years",
-            "c. 6 to 10 years",
-            "d. 11 to 15 years",
-            "e. 16 to 20 years",
-            "f.  21 years or more"] do
+for opt in ["Less than 1 year",
+            "1 to 5 years",
+            "6 to 10 years",
+            "11 to 15 years",
+            "16 to 20 years",
+            "21 years or more"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 
 end
 # background info
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 11, element_name: "element_11_1", element_title: "How long have you worked in this hospital?"
 
-for opt in ["a. Less than 1 year",
-            "b. 1 to 5 years",
-            "c. 6 to 10 years",
-            "d. 11 to 15 years",
-            "e. 16 to 20 years",
-            "f.  21 years or more"] do
+for opt in ["Less than 1 year",
+            "1 to 5 years",
+            "6 to 10 years",
+            "11 to 15 years",
+            "16 to 20 years",
+            "21 years or more"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
 # hours worked
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 12, element_name: "element_12_1", element_title: "Typically, how many hours per week do you work in this hospital?"
 
-for opt in ["a.  Less than 20 hours per week",
-          "b.  20 to 39 hours per week",
-          "c.  40 to 59 hours per week",
-          "d.  60 to 79 hours per week",
-          "e.  80 to 99 hours per week",
-          "f.  100 hours per week or more "] do
+for opt in ["Less than 20 hours per week",
+          "20 to 39 hours per week",
+          "40 to 59 hours per week",
+          "60 to 79 hours per week",
+          "80 to 99 hours per week",
+          "100 hours per week or more "] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
 # position
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 13, element_name: "element_13_1", element_title: "What is your staff position in this hospital?  Select ONE answer that best describes your staff position.", element_choice_has_other: true, element_choice_other_label: "n.  Other, please specify: "
 
-for opt in ["a.  Registered Nurse",
-"b.  Physician Assistant/Nurse Practitioner",
-"c.  LVN/LPN",
-"d.  Patient Care Asst/Hospital Aide/Care Partner",
-"e.  Attending/Staff Physician",
-"f.   Resident Physician/Physician in Training",
-"g.  Pharmacist",
-"h.  Dietician",
-"i.   Unit Assistant/Clerk/Secretary",
-"j.   Respiratory Therapist",
-"k.  Physical, Occupational, or Speech Therapist",
-"l.   Technician (e.g., EKG, Lab, Radiology)",
-"m.  Administration/Management"] do
+for opt in ["Registered Nurse",
+"Physician Assistant/Nurse Practitioner",
+"LVN/LPN",
+"Patient Care Asst/Hospital Aide/Care Partner",
+"Attending/Staff Physician",
+"Resident Physician/Physician in Training",
+"Pharmacist",
+"Dietician",
+"Unit Assistant/Clerk/Secretary",
+"Respiratory Therapist",
+"Physical, Occupational, or Speech Therapist",
+"Technician (e.g., EKG, Lab, Radiology)",
+"Administration/Management",
+"Other"] do
 
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
@@ -204,8 +212,8 @@ end
 # contact with patients
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 14, element_name: "element_14_1", element_title: "In your staff position, do you typically have direct interaction or contact with patients?"
 
-for opt in ["a.  YES, I typically have direct interaction or contact with patients.",
-            "b.  NO, I typically do NOT have direct interaction or contact with patients."] do
+for opt in ["YES, I typically have direct interaction or contact with patients.",
+            "NO, I typically do NOT have direct interaction or contact with patients."] do
 
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
@@ -213,12 +221,12 @@ end
 #tenure
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 15, element_name: "element_15_1", element_title: "How long have you worked in your current specialty or profession?"
 
-for opt in ["a. Less than 1 year",
-            "b. 1 to 5 years",
-            "c. 6 to 10 years",
-            "d. 11 to 15 years",
-            "e. 16 to 20 years",
-            "f.  21 years or more"] do
+for opt in ["Less than 1 year",
+            "1 to 5 years",
+            "6 to 10 years",
+            "11 to 15 years",
+            "16 to 20 years",
+            "21 years or more"] do
 
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
