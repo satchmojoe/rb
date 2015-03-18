@@ -29,13 +29,19 @@ for opt in ["Many different hospital units/No specific unit","Medicine (non-surg
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
 
+# other
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 34, element_name: "element_34_1", element_title: "If other please specify"
+
 
 # micu/sicu
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 20, element_name: "element_20_1", element_title: "If you chose ICU, please select which type of ICU you work in most often:"
 
-for opt in ["Many different hospital units/No specific unit","MICU/SICU: Combined medical/surgical ICU","CCU: Coronary Care Unit","CVICU: Cardio-vascular ICU","MICU: Medical ICU","NICU: Neonatal ICU","N-ICU: Neuro ICU","PICU: Pediatric ICU","SICU: Surgical ICU","Other: Please explain:"] do
+for opt in ["Many different hospital units/No specific unit","MICU/SICU: Combined medical/surgical ICU","CCU: Coronary Care Unit","CVICU: Cardio-vascular ICU","MICU: Medical ICU","NICU: Neonatal ICU","N-ICU: Neuro ICU","PICU: Pediatric ICU","SICU: Surgical ICU","Other"] do
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
+
+# other
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 35, element_name: "element_35_1", element_title: "If other please specify"
 
 # agree/disagree
 m_p_id = FormElement.last.id + 1
@@ -231,6 +237,9 @@ for opt in ["Registered Nurse",
 
   ElementOption.create form_element_id: fe.id, option: opt, position: fe.element_options.count
 end
+
+# other
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 36, element_name: "element_36_1", element_title: "If other please specify"
 
 # contact with patients
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 14, element_name: "element_14_1", element_title: "In your staff position, do you typically have direct interaction or contact with patients?"
