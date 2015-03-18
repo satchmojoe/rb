@@ -15,6 +15,10 @@ end
 # primary language
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("text").id, element_id: 19, element_name: "element_19_1", element_title: "If English is not your primary language, did you receive help to fill out this survey?"
 
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 2, element_name: "element_2_1", element_title: "SECTION A: Your Work Area/Unit", element_tool_tip: "In this survey, think of your “unit” as the work area, department, or clinical area of the hospital where you spend most of your work time or provide most of your clinical services."
+
 # area/unit question
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 2, element_name: "element_2_1", element_title: "What is your primary work area or unit in this hospital? Select ONE answer."
 
