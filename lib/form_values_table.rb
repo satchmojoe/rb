@@ -57,10 +57,24 @@ class FormValuesTable < ActiveRecord::Migration
     JSON.parse(res.to_json).map{|e| e['column_name']}
   end
 
+  # allow users to use element_title for filters rather than the more cryptic colum name
+  def self.convert_element_titles_to_column_names(filters,form_id)
+    column_lookups = FormElement.where("element_title in (?) and form_id = ?", filters.collect{|f| f[:col]}, form_id).group_by(&:element_title)
+    filters.collect do |filter|
+      # if not a element_title throw an error
+      if column_lookups.has_key? filter[:col]
+        { col: column_lookups[filter[:col]].first.element_name, val: filter[:val] }
+      else
+        raise "Element title #{filter[:col]} does not exist"
+      end
+    end
+  end
+
 # Form: the form id
 # Filters: hash of columns and values to filter by
 #   [{col: 'element_1_1', val:'fred'}] => pull back entries where element_1_1 has value 'fred'
   def self.get_all_values form, filters
+    filters = self.convert_element_titles_to_column_names(filters, form)
     columns       = FormValuesTable.get_forms_value_columns form
     query_string  = FormValuesTable.set_query_string form, filters, columns
 

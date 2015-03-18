@@ -1,6 +1,7 @@
 class FormValuesController < ApplicationController
   before_filter :authorize_user
 
+  # get all entries and search by column
   def index
     filters = split_out_filters
     render json: FormValuesTable.get_all_values(params['form_id'], filters)
@@ -21,6 +22,10 @@ class FormValuesController < ApplicationController
   end
 
   def split_out_filters
+    # just use get params
+    return request.GET.collect{|key,value| {col: key, val: value}}
+
+    # prob can deprecate
     filters = []
     begin
       URI::parse(request.url).query.split("&").each{|e| filters.push( {col: e.split('=')[0], val: e.split('=')[1]})  }
