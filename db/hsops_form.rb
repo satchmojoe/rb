@@ -5,6 +5,15 @@ form = Permission.last.form
 form.form_name = "HSOPS Sample"
 form.save
 
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 38, element_name: "element_38_1", element_title: "Instructions", element_tool_tip: "This survey asks for your opinions about patient safety issues, medical error, and event reporting in your hospital and will take about 10 to 15 minutes to complete.\n\nIf you do not wish to answer a question, or if a question does not apply to you, you may leave your answer blank."
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 39, element_name: "element_39_1", element_title: "In addition:", element_tool_tip: "An 'event' is defined as any type of error, mistake, incident, accident, or deviation, regardless of whether or not it results in patient harm. \n\n'Patient safety' is defined as the avoidance and prevention of patient injuries or adverse events resulting from the processes of health care delivery."
+
+# section information
+fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 40, element_name: "element_40_1", element_title: "Primary Language", element_tool_tip: ""
+
 # language question
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 1, element_name: "element_1_1", element_title: "What language do you use most often to speak or read at work?"
 
@@ -21,6 +30,8 @@ end
 
 # section information
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("section").id, element_id: 3, element_name: "element_3_1", element_title: "SECTION A: Your Work Area/Unit", element_tool_tip: "In this survey, think of your “unit” as the work area, department, or clinical area of the hospital where you spend most of your work time or provide most of your clinical services."
+
+
 
 # area/unit question
 fe = FormElement.create form_id: form.id, element_type_id: ElementType.find_by_e_type("radio").id, element_id: 4, element_name: "element_4_1", element_title: "What is your primary work area or unit in this hospital? Select ONE answer."
