@@ -21,6 +21,38 @@ class FormValuesTable < ActiveRecord::Migration
     end
   end
 
+# Update a given entry in a form
+  def self.update_form_entry form_id, entry_id, values
+    columns = []
+    data  = []
+    if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
+      if FormValuesTable.validate_columns_from_values form_id, values
+        values.each do |value|
+          # It's crucial these two arrays stay ordered the same!!!
+          data.push value['value']
+          columns.push value['name']
+        end
+        res = FormValuesTable.clean_up_update data, columns
+        data = res[0]
+        columns = res[1]
+
+        if data.length == columns.length
+          ActiveRecord::Base.connection.execute "delete from form_#{form_id} where id = #{entry_id}"
+          res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
+
+          # Return the string value of the result status
+          res.res_status res.result_status
+        else
+          "Error: something went wrong cleaning up the timestamps before running the update"
+        end
+      else
+        "Error: form submitted with columns not present in the values table"
+      end
+    else
+      "Error: that form doesn't exist or have a values table you pathetic, useless excuse for a left-handed football bat!"
+    end
+  end
+
 # Save a set of values to the given forms form_values table
   def self.insert_new_form_entry form_id, values
     columns = []
@@ -120,5 +152,25 @@ class FormValuesTable < ActiveRecord::Migration
     else
       {error: "no entries for that form id"}
     end
+  end
+
+  # Find the timestamp entries and remove them before updating
+  def self.clean_up_update data, columns
+    for field in Rails.application.config.remove_columns_entry_update do
+      index = columns.index field
+
+      if index and columns.length == data.length
+        columns.delete_at index
+        data.delete_at index
+      end
+    end
+
+    # Clean up the 'enabled' column
+    index = columns.index 'enabled'
+    if index and data[index].blank? and columns.length == data.length
+      data[index] = true
+    end
+
+    [data, columns]
   end
 end

@@ -23,5 +23,7 @@ module RubyFormsEngine
     config.autoload_paths << Rails.root.join("lib")
 
     config.admin_set = false
+
+    config.remove_columns_entry_update = ['updated_at','created_at']
   end
 end

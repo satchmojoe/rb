@@ -16,6 +16,8 @@ class FormValuesController < ApplicationController
   end
 
   def update
+    FormValuesTable.update_form_entry(params['form_id'], params['entry_id'], JSON.parse(request.body.read).map{|k,v| JSON.parse({name: k, value: v}.to_json) })
+    render json: FormValuesTable.get_single_entry_values(params['form_id'], params['entry_id'])
   end
 
   def delete

@@ -51,7 +51,7 @@ if Rails.env == 'development' or Rails.env == 'test'
 
     count = 0
     ElementType.all.each do |type|
-      FormElement.create form_id: form.id, element_type_id: type.id, element_id: count, element_name: "element_ " + count.to_s + "_1"
+      FormElement.create form_id: form.id, element_type_id: type.id, element_id: count, element_name: "element_" + count.to_s + "_1"
       count += 1
     end
 
