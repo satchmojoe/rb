@@ -63,7 +63,7 @@ class FormValuesTable < ActiveRecord::Migration
           data.push value['value']
           columns.push value['name']
         end
-        res = ActiveRecord::Base.connection.execute "insert into form_6 (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
+        res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
 
         # Return the string value of the result status
         res.res_status res.result_status
