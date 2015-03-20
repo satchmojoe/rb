@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   post 'forms/:form_id/entry' => 'form_values#create'
 
-  delete 'form_values/delete'
+  delete 'forms/:form_id/entry/:entry_id' => 'form_values#delete'
 
   get 'forms/index', defaults: {format: :json}
 
@@ -17,6 +17,6 @@ Rails.application.routes.draw do
 
   post 'forms' => 'forms#create'
 
-  delete 'forms/delete'
+  delete 'forms/:form_id' => 'forms#delete'
 
 end

@@ -21,6 +21,7 @@ class FormValuesController < ApplicationController
   end
 
   def delete
+    render json: FormValuesTable.delete_form_entry(params['form_id'], params['entry_id'])
   end
 
   def split_out_filters

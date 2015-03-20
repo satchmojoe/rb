@@ -18,6 +18,7 @@ class FormsController < ApplicationController
   end
 
   def delete
+    render json: {response: Form.delete_form(params[:form_id])}
   end
 
 end

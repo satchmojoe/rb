@@ -173,4 +173,19 @@ class FormValuesTable < ActiveRecord::Migration
 
     [data, columns]
   end
+
+  def self.delete_form_entry form_id, entry_id
+    res = ActiveRecord::Base.connection.execute "select count(*) from form_#{form_id} where id = #{entry_id}"
+    count = JSON.parse(res.to_json)[0]['count'].to_i
+
+    if count > 0
+      ActiveRecord::Base.connection.execute "delete from form_#{form_id} where id = #{entry_id}"
+
+      results = "deleted"
+    else
+      results = "no matching records found"
+    end
+
+    {results: results}.to_json
+  end
 end

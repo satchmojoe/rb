@@ -68,7 +68,42 @@ class Form < ActiveRecord::Base
     end
   end
 
+  def self.delete_form form_id
+    begin
+      # Gather everything up
+      form = Form.find form_id
+      form_elements = form.form_elements
+
+      element_options = []
+      form_elements.each do |fe|
+        element_options.push fe.element_options
+      end
+      element_options.flatten!
+
+      # Slash and burn!!! or just delete...that's ok too
+      element_options.each do |eo|
+        eo.form_element_dictionary_option.delete if eo.form_element_dictionary_option
+        eo.delete
+      end
+
+      form_elements.each do |fe|
+        fe.delete
+      end
+
+      form.delete
+
+      ActiveRecord::Base.connection.execute "drop table form_#{form_id}"
+      "done deleting form #{form_id}"
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+      return {error: {form: form_id, message: e.message}}
+    end
+
+  end
+
   private
+
   # These values will need to be updated as their functional elements get updated. For example, if
   #   a field is assigned logic, change the value of 'logic_field_enable'
   def default_values
