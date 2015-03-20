@@ -9,11 +9,11 @@ Rails.application.routes.draw do
 
   delete 'form_values/delete'
 
+  get 'forms/index', defaults: {format: :json}
+
   put 'forms/:id' => 'forms#update'
 
   get 'forms/:id' => 'forms#show', defaults: {format: :json}
-
-  get 'forms/index', defaults: {format: :json}
 
   post 'forms' => 'forms#create'
 
