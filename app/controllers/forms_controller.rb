@@ -21,4 +21,7 @@ class FormsController < ApplicationController
     render json: {response: Form.delete_form(params[:form_id])}
   end
 
+  def logic_rules_conditions
+    render json: {conditions: Rails.application.config.rule_conditions}.to_json
+  end
 end

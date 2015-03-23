@@ -66,16 +66,30 @@ class FormElement < ActiveRecord::Base
       end
     end
 
-    responses
+    responses.compact.empty? ? nil : responses
   end
+
+  def self.setup_logic_elements fe, logic_elements, responses = []
+    if !logic_elements.blank?
+      logic_elements.each do |le|
+        le['form_element_id'] = fe.id
+        responses.push FieldLogicElement.create_from_submission le.to_hash, responses
+      end
+    end
+    responses.compact.empty? ? nil : responses
+  end
+
+
 # Remove the fields that need to be recursively built or are autofilled, then make the new object
   def self.create_from_submission form_element
     responses = []
     begin
       new_options = form_element['options']
+      new_logic_elements = form_element['field_logic_elements']
       element_type = form_element['element_type']
 
       form_element.delete 'options'
+      form_element.delete 'field_logic_elements'
       form_element.delete 'id'
       form_element.delete 'created_at'
       form_element.delete 'updated_at'
@@ -89,25 +103,19 @@ class FormElement < ActiveRecord::Base
       new_fe.set_position
       new_fe.save
 
-=begin
-      if !new_options.blank?
-        new_options.each do |no|
-          no['form_element_id'] = new_fe.id
-          responses.push ElementOption.create_from_submission no.to_hash
-        end
-      end
-=end
       # This is a refactor to extract out this to a method
-      responses = FormElement.setup_options new_fe, new_options, responses
+      responses.push FormElement.setup_options new_fe, new_options, responses
+      responses.push FormElement.setup_logic_elements new_fe, new_logic_elements, responses
 
       # Propogate errors up
       if !responses.compact.empty?
-        raise responses
+        raise "Error: #{responses.to_s}"
       end
 
     rescue Exception => e
       Rails.logger.error e.message
       Rails.logger.error e.backtrace
+
       return {error: {form_element: e.message, element_option_errors: responses}}
     end
 

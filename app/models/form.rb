@@ -15,6 +15,8 @@ class Form < ActiveRecord::Base
 
     fj[:form_elements] = FormElement.where(form_id: self.id).all.sort_by{|fe| fe.element_position}.map{|eo| eo.json_view}
 
+    fj[:logic_rule_conditions] = Rails.application.config.rule_conditions
+
     fj
   end
 
