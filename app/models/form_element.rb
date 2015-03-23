@@ -9,6 +9,8 @@ class FormElement < ActiveRecord::Base
   delegate :e_type, to: :element_type
 
   has_many :element_options
+  has_many :field_logic_elements
+  has_many :field_logic_conditions, through: :field_logic_elements
 
   validates :element_id,        presence: true
   validates :element_name,      presence: true
@@ -27,6 +29,7 @@ class FormElement < ActiveRecord::Base
     fe = JSON.parse self.to_json
     fe[:element_type] = self.element_type.e_type
     fe[:options] = ElementOption.where(form_element_id: self.id).all.sort_by{|eo| eo.position}.map{|eo| eo.json_view}
+    fe[:field_logic_elements] = FieldLogicElement.where(form_element_id: self.id).map{|fle| fle.json_view}
 
     fe
   end

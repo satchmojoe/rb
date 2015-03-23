@@ -8,6 +8,7 @@ class Form < ActiveRecord::Base
 
   has_many :form_elements
   has_many :element_options, through: :form_elements
+  has_many :field_logic_elements, through: :form_elements
 
   def json_view
     fj = JSON.parse self.to_json

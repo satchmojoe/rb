@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323162648) do
+ActiveRecord::Schema.define(version: 20150323175830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,12 +41,25 @@ ActiveRecord::Schema.define(version: 20150323162648) do
     t.integer  "form_element_id"
     t.string   "rule_condition"
     t.string   "rule_keyword"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "field_logic_element_id"
   end
 
   add_index "field_logic_conditions", ["form_element_id"], name: "index_field_logic_conditions_on_form_element_id", using: :btree
   add_index "field_logic_conditions", ["form_id"], name: "index_field_logic_conditions_on_form_id", using: :btree
+
+  create_table "field_logic_elements", force: :cascade do |t|
+    t.integer  "form_id"
+    t.integer  "form_element_id"
+    t.string   "rule_show_hide"
+    t.string   "rule_all_any"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "field_logic_elements", ["form_element_id"], name: "index_field_logic_elements_on_form_element_id", using: :btree
+  add_index "field_logic_elements", ["form_id"], name: "index_field_logic_elements_on_form_id", using: :btree
 
   create_table "form_element_dictionary_options", force: :cascade do |t|
     t.integer  "form_id"
@@ -163,4 +176,6 @@ ActiveRecord::Schema.define(version: 20150323162648) do
   end
 
   add_foreign_key "field_logic_conditions", "forms"
+  add_foreign_key "field_logic_elements", "form_elements"
+  add_foreign_key "field_logic_elements", "forms"
 end
