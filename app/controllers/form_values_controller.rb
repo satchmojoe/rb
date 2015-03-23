@@ -24,6 +24,11 @@ class FormValuesController < ApplicationController
     render json: FormValuesTable.delete_form_entry(params['form_id'], params['entry_id'])
   end
 
+  def count_with_matching_filters
+    filters = split_out_filters
+    render json: FormValuesTable.count_with_matching_filters(params['form_id'], filters)
+  end
+
   def split_out_filters
     # just use get params
     return request.GET.collect{|key,value| {col: key, val: value}}
@@ -39,5 +44,4 @@ class FormValuesController < ApplicationController
     Rails.logger.debug "Filters are : " + filters.to_s
     filters
   end
-
 end

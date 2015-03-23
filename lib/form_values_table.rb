@@ -100,6 +100,7 @@ class FormValuesTable < ActiveRecord::Migration
         raise "Element title #{filter[:col]} does not exist"
       end
     end
+    filters.compact
   end
 
 # Form: the form id
@@ -107,22 +108,27 @@ class FormValuesTable < ActiveRecord::Migration
 #   [{col: 'element_1_1', val:'fred'}] => pull back entries where element_1_1 has value 'fred'
   def self.get_all_values form, filters
     filters = self.convert_element_titles_to_column_names(filters, form)
-    columns       = FormValuesTable.get_forms_value_columns form
-    query_string  = FormValuesTable.set_query_string form, filters, columns
 
-    Rails.logger.debug "Query string is: " + query_string
-    begin
-      if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
-        data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
-        titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
-        JSON.parse({data: data, titles: titles}.to_json)
-      else
-        {error: "no value table for that form id"}
+    if filters
+      columns       = FormValuesTable.get_forms_value_columns form
+      query_string  = FormValuesTable.set_query_string form, filters, columns
+
+      Rails.logger.debug "Query string is: " + query_string
+      begin
+        if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
+          data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+          titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
+          JSON.parse({data: data, titles: titles}.to_json)
+        else
+          {error: "no value table for that form id"}
+        end
+      rescue Exception => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace
+        {error: "error in query string, check params", message: e.message}
       end
-    rescue Exception => e
-      Rails.logger.error e.message
-      Rails.logger.error e.backtrace
-      {error: "error in query string, check params", message: e.message}
+    else
+      { error: "Element title #{filter[:col]} does not exist"}
     end
   end
 
@@ -188,4 +194,41 @@ class FormValuesTable < ActiveRecord::Migration
 
     {results: results}.to_json
   end
+
+  def self.build_count_query_with_filters form, filters
+    query_strings = []
+
+    filters.each do |filter|
+      q = "select element_name from form_elements where element_title = '#{filter[:col]}'"
+      element_name = JSON.parse(ActiveRecord::Base.connection.execute(q).to_json)[0]["element_name"]
+      query_strings.push  " #{element_name} = '#{filter[:val]}' "
+    end
+
+    query_strings.empty? ? 'true' : query_strings.join(" and ")
+  end
+
+  def self.count_with_matching_filters form, filters
+    parsed_filters = self.convert_element_titles_to_column_names(filters, form)
+
+    if filters
+      # Original query selects all columns, we just need the count
+      query_string = "select count(*) from  form_#{form} where " + FormValuesTable.build_count_query_with_filters(form, filters)
+
+      begin
+        if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
+          data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+          JSON.parse data[0].to_json
+        else
+          {error: "no value table for that form id"}
+        end
+      rescue Exception => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace
+        {error: "error in query string, check params", message: e.message}
+      end
+    else
+      { error: "Element title #{filter[:col]} does not exist"}
+    end
+  end
+
 end

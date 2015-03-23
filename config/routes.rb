@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'forms/:form_id/count/' => 'form_values#count_with_matching_filters'
+
   get 'forms/:form_id/entries' => 'form_values#index'
 
   get 'forms/:form_id/entry/:entry_id' => 'form_values#show'
