@@ -25,5 +25,6 @@ module RubyFormsEngine
     config.admin_set = false
 
     config.remove_columns_entry_update = ['updated_at','created_at']
+    config.rule_conditions = ['equals','greater_than','less_than','contains']
   end
 end

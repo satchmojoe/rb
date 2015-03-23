@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150320171942) do
+ActiveRecord::Schema.define(version: 20150323162648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,19 @@ ActiveRecord::Schema.define(version: 20150320171942) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "field_logic_conditions", force: :cascade do |t|
+    t.integer  "form_id"
+    t.integer  "target_element_id"
+    t.integer  "form_element_id"
+    t.string   "rule_condition"
+    t.string   "rule_keyword"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "field_logic_conditions", ["form_element_id"], name: "index_field_logic_conditions_on_form_element_id", using: :btree
+  add_index "field_logic_conditions", ["form_id"], name: "index_field_logic_conditions_on_form_id", using: :btree
 
   create_table "form_element_dictionary_options", force: :cascade do |t|
     t.integer  "form_id"
@@ -149,4 +162,5 @@ ActiveRecord::Schema.define(version: 20150320171942) do
     t.string   "last_ip_address"
   end
 
+  add_foreign_key "field_logic_conditions", "forms"
 end
