@@ -8,11 +8,14 @@ class Form < ActiveRecord::Base
 
   has_many :form_elements
   has_many :element_options, through: :form_elements
+  has_many :field_logic_elements, through: :form_elements
 
   def json_view
     fj = JSON.parse self.to_json
 
     fj[:form_elements] = FormElement.where(form_id: self.id).all.sort_by{|fe| fe.element_position}.map{|eo| eo.json_view}
+
+    fj[:logic_rule_conditions] = Rails.application.config.rule_conditions
 
     fj
   end

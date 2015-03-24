@@ -10,6 +10,13 @@ module Utils
         eo.delete
       end
 
+      fe.field_logic_elements.each do |fle|
+        fle.field_logic_conditions.each do |flc|
+          flc.delete
+        end
+        fle.delete
+      end
+
       fe.delete
     end
 
