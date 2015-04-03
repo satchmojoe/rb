@@ -92,15 +92,16 @@ class FormValuesTable < ActiveRecord::Migration
   # allow users to use element_title for filters rather than the more cryptic colum name
   def self.convert_element_titles_to_column_names(filters,form_id)
     column_lookups = FormElement.where("element_title in (?) and form_id = ?", filters.collect{|f| f[:col]}, form_id).group_by(&:element_title)
+    new_filters = []
     filters.collect do |filter|
       # if not a element_title throw an error
       if column_lookups.has_key? filter[:col]
-        { col: column_lookups[filter[:col]].first.element_name, val: filter[:val] }
+        new_filters.push({ col: column_lookups[filter[:col]].first.element_name, val: filter[:val] })
       else
         raise "Element title #{filter[:col]} does not exist"
       end
     end
-    filters.compact
+    new_filters.compact
   end
 
 # Form: the form id
