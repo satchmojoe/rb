@@ -13,6 +13,32 @@ class FieldLogicCondition < ActiveRecord::Base
     JSON.parse self.to_json
   end
 
+  def self.create_or_update_from_submission flc, responses
+    if flc['id'] and !flc['id'].blank? and FieldLogicCondition.find(flc['id'])
+      responses.push(self.update_from_submission flc, responses)
+    else
+      responses.push(self.create_from_submission flc, responses)
+    end
+
+    responses.compact.empty? ? nil : responses
+  end
+
+  def self.update_from_submission flc, responses
+    begin
+      update_flc = FieldLogicCondition.find flc['id']
+
+      update_flc.update flc
+
+    rescue Exception => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+
+      return {error: {field_logic_condition: e.message}}
+    end
+
+    nil
+  end
+
   def self.create_from_submission flc, responses
     begin
       flc.delete 'id'

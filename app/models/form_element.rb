@@ -39,7 +39,7 @@ class FormElement < ActiveRecord::Base
       form_element = FormElement.find form_element_data['id']
 
       form_element_data.each do |k,v|
-        if k != 'id' and k != "created_at" and k != 'form_id' and k != 'options' and k != 'element_type'
+        if k != 'id' and k != "created_at" and k != 'form_id' and k != 'options' and k != 'element_type' and k != "field_logic_elements"
           FormElement.update(form_element_data['id'], k => v)
         end
       end
@@ -49,6 +49,8 @@ class FormElement < ActiveRecord::Base
       form_element.element_options.delete_all
 
       FormElement.setup_options form_element, form_element_data['options']
+
+      FormElement.setup_logic_elements form_element, form_element_data['field_logic_elements']
 
       form_element.save
     else
@@ -73,7 +75,7 @@ class FormElement < ActiveRecord::Base
     if !logic_elements.blank?
       logic_elements.each do |le|
         le['form_element_id'] = fe.id
-        responses.push FieldLogicElement.create_from_submission le.to_hash, responses
+        responses.push FieldLogicElement.create_or_update_from_submission le.to_hash, responses
       end
     end
     responses.compact.empty? ? nil : responses
@@ -105,7 +107,6 @@ class FormElement < ActiveRecord::Base
 
       # This is a refactor to extract out this to a method
       responses.push FormElement.setup_options new_fe, new_options, responses
-      responses.push FormElement.setup_logic_elements new_fe, new_logic_elements, responses
 
       # Propogate errors up
       if !responses.compact.empty?
