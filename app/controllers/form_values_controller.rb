@@ -4,7 +4,13 @@ class FormValuesController < ApplicationController
   # get all entries and search by column
   def index
     filters = split_out_filters
-    render json: FormValuesTable.get_all_values(params['form_id'], filters)
+
+    res =  FormValuesTable.get_all_values(params['form_id'], filters)
+
+    if params.has_key? 'group_by'
+      res['data'] = res['data'].group_by{|e| e[params['group_by']]}
+    end
+    render json: res
   end
 
   def show
@@ -31,7 +37,7 @@ class FormValuesController < ApplicationController
 
   def split_out_filters
     # just use get params
-    return request.GET.collect{|key,value| {col: key, val: value}}
+    return request.GET.collect{|key,value| {col: key, val: value}}.delete_if{|e| e[:col] == "group_by"}
 
     # prob can deprecate
     filters = []
