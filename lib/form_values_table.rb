@@ -95,7 +95,7 @@ class FormValuesTable < ActiveRecord::Migration
     new_filters = []
     filters.collect do |filter|
       # if not a element_title throw an error
-      if !filter[:col].in?(['group_field','group_by'])
+      if !filter[:col].in? FormValuesTable.non_filter_params
         if column_lookups.has_key? filter[:col]
           new_filters.push({ col: column_lookups[filter[:col]].first.element_name, val: filter[:val] })
         else
@@ -234,4 +234,7 @@ class FormValuesTable < ActiveRecord::Migration
     end
   end
 
+  def self.non_filter_params
+    ['group_field','group_by','last_distinct_entry_element']
+  end
 end

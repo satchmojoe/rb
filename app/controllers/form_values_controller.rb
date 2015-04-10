@@ -11,6 +11,8 @@ class FormValuesController < ApplicationController
       res['data'] = res['data'].group_by{|e| e[params['group_by']]}
     elsif params.has_key? 'group_by' and params['group_field'] and params['group_field'] == "name"
       res['data'] = apply_grouping res['data']
+    elsif params.has_key? 'last_distinct_entry_element'
+      res['data'] = apply_last_distinct res['data']
     end
     render json: res
   end
@@ -57,5 +59,18 @@ class FormValuesController < ApplicationController
     col = FormValuesTable.convert_element_titles_to_column_names([{col: params['group_by']}],params['form_id'])
 
     data.group_by{|e| e[col[0][:col]]}
+  end
+
+  def apply_last_distinct data
+    values = []
+    results = []
+    data.sort_by{|d| d['updated_at']}.each do |entry|
+      if !entry[params['last_distinct_entry_element']].in? values
+        values.push entry[params['last_distinct_entry_element']]
+        results.push entry
+      end
+    end
+
+    results
   end
 end
