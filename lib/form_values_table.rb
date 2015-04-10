@@ -95,10 +95,12 @@ class FormValuesTable < ActiveRecord::Migration
     new_filters = []
     filters.collect do |filter|
       # if not a element_title throw an error
-      if column_lookups.has_key? filter[:col]
-        new_filters.push({ col: column_lookups[filter[:col]].first.element_name, val: filter[:val] })
-      else
-        raise "Element title #{filter[:col]} does not exist"
+      if !filter[:col].in?(['group_field','group_by'])
+        if column_lookups.has_key? filter[:col]
+          new_filters.push({ col: column_lookups[filter[:col]].first.element_name, val: filter[:val] })
+        else
+          raise "Element title #{filter[:col]} does not exist"
+        end
       end
     end
     new_filters.compact

@@ -7,8 +7,10 @@ class FormValuesController < ApplicationController
 
     res =  FormValuesTable.get_all_values(params['form_id'], filters)
 
-    if params.has_key? 'group_by'
+    if params.has_key? 'group_by' and params['group_field'] and params['group_field'] == "title"
       res['data'] = res['data'].group_by{|e| e[params['group_by']]}
+    elsif params.has_key? 'group_by' and params['group_field'] and params['group_field'] == "name"
+      res['data'] = apply_grouping res['data']
     end
     render json: res
   end
@@ -49,5 +51,11 @@ class FormValuesController < ApplicationController
     end
     Rails.logger.debug "Filters are : " + filters.to_s
     filters
+  end
+
+  def apply_grouping data
+    col = FormValuesTable.convert_element_titles_to_column_names([{col: params['group_by']}],params['form_id'])
+
+    data.group_by{|e| e[col[0][:col]]}
   end
 end
