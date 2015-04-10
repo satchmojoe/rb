@@ -27,7 +27,7 @@ class FormValuesTable < ActiveRecord::Migration
     data  = []
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
-        values.each do |value|
+        FormValuesTable.fix_times(values, false).each do |value|
           # It's crucial these two arrays stay ordered the same!!!
           data.push value['value']
           columns.push value['name']
@@ -35,6 +35,9 @@ class FormValuesTable < ActiveRecord::Migration
         res = FormValuesTable.clean_up_update data, columns
         data = res[0]
         columns = res[1]
+
+        columns.push 'id'
+        data.push entry_id
 
         if data.length == columns.length
           ActiveRecord::Base.connection.execute "delete from form_#{form_id} where id = #{entry_id}"
@@ -59,10 +62,11 @@ class FormValuesTable < ActiveRecord::Migration
     data  = []
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
-        values.each do |value|
+        FormValuesTable.fix_times(values, true).each do |value|
           data.push value['value']
           columns.push value['name']
         end
+
         res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
 
         # Return the string value of the result status
@@ -78,9 +82,14 @@ class FormValuesTable < ActiveRecord::Migration
   def self.validate_columns_from_values form, values
     columns = FormValuesTable.get_forms_value_columns form
     value_names = values.map{|e| e['name']}
-
     # Make sure every value submitted has a column in the DB
-    (value_names - columns).empty?
+    if (value_names - columns).empty?
+      true
+    else
+      Rails.logger.error "These columns do not match:"
+      Rails.logger.error puts(value_names - columns)
+      false
+    end
   end
 
 # Get the columns from the form_values table for a given form
@@ -165,15 +174,6 @@ class FormValuesTable < ActiveRecord::Migration
 
   # Find the timestamp entries and remove them before updating
   def self.clean_up_update data, columns
-    for field in Rails.application.config.remove_columns_entry_update do
-      index = columns.index field
-
-      if index and columns.length == data.length
-        columns.delete_at index
-        data.delete_at index
-      end
-    end
-
     # Clean up the 'enabled' column
     index = columns.index 'enabled'
     if index and data[index].blank? and columns.length == data.length
@@ -237,4 +237,25 @@ class FormValuesTable < ActiveRecord::Migration
   def self.non_filter_params
     ['group_field','group_by','last_distinct_entry_element']
   end
+
+  def self.fix_times data, add_created
+    updated = false
+    data.each do |d|
+      if d['name'] == 'updated_at'
+        d['value'] = Time.zone.now
+        updated = true
+      end
+    end
+
+    if !updated
+      data.push( {'value' => Time.zone.now, 'name' => 'updated_at'})
+    end
+
+    if add_created
+      data.push( {'value' => Time.zone.now, 'name' => 'created_at'})
+    end
+
+    data
+  end
+
 end
