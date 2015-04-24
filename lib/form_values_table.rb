@@ -1,3 +1,6 @@
+require 'net/http'
+require 'net/https'
+
 class FormValuesTable < ActiveRecord::Migration
 
   def self.create_values_table form_id
@@ -90,6 +93,20 @@ class FormValuesTable < ActiveRecord::Migration
       Rails.logger.error puts(value_names - columns)
       false
     end
+  end
+
+  def self.get_key
+    # this needs to be an environment variable that gives the address of the key
+    File.read ENV['KEY_PATH']
+
+=begin
+    url = URI.parse('path-to-where-key-will-be-hosted')
+    req = Net::HTTP::Get.new(url.to_s)
+      res = Net::HTTP.start(url.host, url.port) {|http|
+          http.request(req)
+      }
+    res.body
+=end
   end
 
 # Get the columns from the form_values table for a given form
@@ -256,6 +273,24 @@ class FormValuesTable < ActiveRecord::Migration
     end
 
     data
+  end
+
+  def self.handle_hipaa data, dir
+    key = FormValuesTable.get_key
+    http = Net::HTTP.new('www.mysite.com', 443)
+    http.use_ssl = true
+
+    path = "http://10.173.13.183/#{dir}"
+    post_data= "key=#{key}&data=#{data}"
+
+    headers = {'Content-Type'=> 'application/x-www-form-urlencoded'}
+
+    resp, data = http.post(path, data, headers)
+
+    puts 'Code = ' + resp.code
+    puts 'Message = ' + resp.message
+    resp.each {|key, val| puts key + ' = ' + val}
+    puts data
   end
 
 end
