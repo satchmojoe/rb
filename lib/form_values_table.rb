@@ -29,23 +29,27 @@ class FormValuesTable < ActiveRecord::Migration
   def self.update_form_entry form_id, entry_id, values
     columns = []
     data  = []
+
+    # This data needs to be transformed into an accetpable structure
+    values = values.keys.map{|e| {'name'=> e, 'value' => values[e]}}
+
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
         FormValuesTable.fix_times(values, false).each do |value|
-          # It's crucial these two arrays stay ordered the same!!!
-          begin
-            data.push FormValuesTable.handle_hipaa(value['value'], encrypt)
-            columns.push value['name']
-          rescue Exception => e
-            Rails.logger.error "Error inserting values from table"
-            Rails.logger.error e.message
-            Rails.logger.error e.backtrace
-          end
+          tmp_data = FormValuesTable.build_data_set_for_insert data, columns, value
+          data = tmp_data[0]
+          columns = tmp_data[1]
         end
         res = FormValuesTable.clean_up_update data, columns
+
         data = res[0]
         columns = res[1]
 
+        # Don't let users screw up the data!!
+        if columns.include? 'id'
+          data.delete_at columns.index('id')
+          columns.delete 'id'
+        end
         columns.push 'id'
         data.push entry_id
 
@@ -73,21 +77,18 @@ class FormValuesTable < ActiveRecord::Migration
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
         FormValuesTable.fix_times(values, true).each do |value|
-          # It's crucial these two arrays stay ordered the same!!!
-          begin
-            data.push FormValuesTable.handle_hipaa(value['value'], encrypt)
-            columns.push value['name']
-          rescue Exception => e
-            Rails.logger.error "Error inserting values from table"
-            Rails.logger.error e.message
-            Rails.logger.error e.backtrace
-          end
+          tmp_data = FormValuesTable.build_data_set_for_insert data, columns, value
+          data = tmp_data[0]
+          columns = tmp_data[1]
         end
 
-        res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
+        if columns.length > 0 and data.length > 0
+          res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
 
-        # Return the string value of the result status
-        res.res_status res.result_status
+          # Return the string value of the result status
+          res.res_status res.result_status
+        end
+
       else
         "Error: form submitted with columns not present in the values table"
       end
@@ -96,15 +97,41 @@ class FormValuesTable < ActiveRecord::Migration
     end
   end
 
+  def self.build_data_set_for_insert data = [], columns = [], value
+    begin
+      if value['value']
+        if value['name'].include?("element_")
+          # It's crucial these two arrays stay ordered the same!!!
+          data.push FormValuesTable.handle_hipaa(value['value'], 'encrypt')
+        else
+          data.push value['value']
+        end
+
+        columns.push value['name']
+      end
+    rescue Exception => e
+      Rails.logger.error "Error inserting values from table"
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+    end
+
+    [data, columns]
+  end
+
   def self.validate_columns_from_values form, values
-    columns = FormValuesTable.get_forms_value_columns form
-    value_names = values.map{|e| e['name']}
-    # Make sure every value submitted has a column in the DB
-    if (value_names - columns).empty?
-      true
-    else
-      Rails.logger.error "These columns do not match:"
-      Rails.logger.error puts(value_names - columns)
+    begin
+      columns = FormValuesTable.get_forms_value_columns form
+      value_names = values.map{|e| e['name']}
+
+      # Make sure every value submitted has a column in the DB
+      if (value_names - columns).empty?
+        true
+      else
+        Rails.logger.error "These columns do not match:"
+        Rails.logger.error puts(value_names - columns)
+        false
+      end
+    rescue
       false
     end
   end
@@ -146,6 +173,26 @@ class FormValuesTable < ActiveRecord::Migration
     new_filters.compact
   end
 
+# Iterate through data and decrypt fields in rresponse rows as needed
+  def self.decrypt_data data
+    new_data = []
+
+    data.each do |data_piece|
+      data_piece.keys.each do |k|
+        if k.include? "element_" and data_piece[k]
+          begin
+            data_piece[k] = FormValuesTable.handle_hipaa data_piece[k], 'decrypt'
+          rescue
+            data_piece[k] = "ERROR IN HANDLING HIPAA"
+          end
+        end
+      end
+
+      new_data.push data_piece
+    end
+
+    new_data
+  end
 # Form: the form id
 # Filters: hash of columns and values to filter by
 #   [{col: 'element_1_1', val:'fred'}] => pull back entries where element_1_1 has value 'fred'
@@ -159,8 +206,7 @@ class FormValuesTable < ActiveRecord::Migration
       Rails.logger.debug "Query string is: " + query_string
       begin
         if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
-          data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
-          binding.pry
+          data = FormValuesTable.decrypt_data(JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json)
           titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
           JSON.parse({data: data, titles: titles}.to_json)
         else
@@ -198,7 +244,7 @@ class FormValuesTable < ActiveRecord::Migration
 
   def self.get_single_entry_values form, entry
     if entry and form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s)
-      JSON.parse ActiveRecord::Base.connection.execute( "select * from form_#{form} where id = #{entry}").to_json
+      FormValuesTable.decrypt_data(JSON.parse ActiveRecord::Base.connection.execute("select * from form_#{form} where id = #{entry}").to_json)
     else
       {error: "no entries for that form id"}
     end
@@ -293,18 +339,22 @@ class FormValuesTable < ActiveRecord::Migration
   # Data: a string to en/decrypt
   # Dir: either "decrypt" or "encrypt"
   def self.handle_hipaa data, dir
-    key = FormValuesTable.get_key
+    begin
+      key = FormValuesTable.get_key
 
-    http = Curl.post("http://10.173.13.183/encrypt/#{dir}",{key: key, data: data})
+      http = Curl.post("http://10.173.13.183/encrypt/#{dir}",{key: key, data: data})
 
-    res = JSON.parse(http.body_str)
+      res = JSON.parse(http.body_str)
 
-    if res.class == Hash and res['data']
-      JSON.parse(http.body_str)['data']
-    else
-      # This MUST raise an error so that, when the data gets entered, if anything goes wrong, the array
-      #   of data and the array of column names, used to do the insert, stay in sync. We are allowing
-      #   the method that inserts or retrieves data to do the error handling
+      if res.class == Hash and res['data']
+        JSON.parse(http.body_str)['data']
+      else
+        # This MUST raise an error so that, when the data gets entered, if anything goes wrong, the array
+        #   of data and the array of column names, used to do the insert, stay in sync. We are allowing
+        #   the method that inserts or retrieves data to do the error handling
+        raise "Error processing HIPAA data"
+      end
+    rescue
       raise "Error processing HIPAA data"
     end
   end
