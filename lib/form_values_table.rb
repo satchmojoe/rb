@@ -33,8 +33,14 @@ class FormValuesTable < ActiveRecord::Migration
       if FormValuesTable.validate_columns_from_values form_id, values
         FormValuesTable.fix_times(values, false).each do |value|
           # It's crucial these two arrays stay ordered the same!!!
-          data.push value['value']
-          columns.push value['name']
+          begin
+            data.push FormValuesTable.handle_hipaa(value['value'], encrypt)
+            columns.push value['name']
+          rescue Exception => e
+            Rails.logger.error "Error inserting values from table"
+            Rails.logger.error e.message
+            Rails.logger.error e.backtrace
+          end
         end
         res = FormValuesTable.clean_up_update data, columns
         data = res[0]
@@ -67,8 +73,15 @@ class FormValuesTable < ActiveRecord::Migration
     if ActiveRecord::Base.connection.table_exists?( 'form_' + form_id.to_s)
       if FormValuesTable.validate_columns_from_values form_id, values
         FormValuesTable.fix_times(values, true).each do |value|
-          data.push value['value']
-          columns.push value['name']
+          # It's crucial these two arrays stay ordered the same!!!
+          begin
+            data.push FormValuesTable.handle_hipaa(value['value'], encrypt)
+            columns.push value['name']
+          rescue Exception => e
+            Rails.logger.error "Error inserting values from table"
+            Rails.logger.error e.message
+            Rails.logger.error e.backtrace
+          end
         end
 
         res = ActiveRecord::Base.connection.execute "insert into form_#{form_id} (" + columns.join(",") + ") VALUES ( '" + data.join("','") + "')"
@@ -147,6 +160,7 @@ class FormValuesTable < ActiveRecord::Migration
       begin
         if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
           data = JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json
+          binding.pry
           titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
           JSON.parse({data: data, titles: titles}.to_json)
         else
@@ -288,7 +302,10 @@ class FormValuesTable < ActiveRecord::Migration
     if res.class == Hash and res['data']
       JSON.parse(http.body_str)['data']
     else
-      "Error processing HIPAA data"
+      # This MUST raise an error so that, when the data gets entered, if anything goes wrong, the array
+      #   of data and the array of column names, used to do the insert, stay in sync. We are allowing
+      #   the method that inserts or retrieves data to do the error handling
+      raise "Error processing HIPAA data"
     end
   end
 
