@@ -51,3 +51,5 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem 'seed_dump'
+
+gem 'curb'

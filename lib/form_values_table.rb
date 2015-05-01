@@ -1,3 +1,4 @@
+require 'uri'
 require 'net/http'
 require 'net/https'
 
@@ -275,22 +276,20 @@ class FormValuesTable < ActiveRecord::Migration
     data
   end
 
+  # Data: a string to en/decrypt
+  # Dir: either "decrypt" or "encrypt"
   def self.handle_hipaa data, dir
     key = FormValuesTable.get_key
-    http = Net::HTTP.new('www.mysite.com', 443)
-    http.use_ssl = true
 
-    path = "http://10.173.13.183/#{dir}"
-    post_data= "key=#{key}&data=#{data}"
+    http = Curl.post("http://10.173.13.183/encrypt/#{dir}",{key: key, data: data})
 
-    headers = {'Content-Type'=> 'application/x-www-form-urlencoded'}
+    res = JSON.parse(http.body_str)
 
-    resp, data = http.post(path, data, headers)
-
-    puts 'Code = ' + resp.code
-    puts 'Message = ' + resp.message
-    resp.each {|key, val| puts key + ' = ' + val}
-    puts data
+    if res.class == Hash and res['data']
+      JSON.parse(http.body_str)['data']
+    else
+      "Error processing HIPAA data"
+    end
   end
 
 end
