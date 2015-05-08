@@ -1,1 +1,3 @@
 KEY_PATH: "tmp_key"
+USE_LOCAL_FILE: FALSE
+KEY_URL: "http://0.0.0.0:3001/tmp_key"

@@ -137,17 +137,19 @@ class FormValuesTable < ActiveRecord::Migration
   end
 
   def self.get_key
-    # this needs to be an environment variable that gives the address of the key
-    File.read ENV['KEY_PATH']
+    local_file = ENV['USE_LOCAL_FILE']
+    if !local_file
+      url = URI.parse(ENV['KEY_URL'])
+      req = Net::HTTP::Get.new(url.to_s)
+        res = Net::HTTP.start(url.host, url.port) {|http|
+            http.request(req)
+        }
+      res.body
+    else
+      # this needs to be an environment variable that gives the address of the key
+      File.read ENV['KEY_PATH']
+    end
 
-=begin
-    url = URI.parse('path-to-where-key-will-be-hosted')
-    req = Net::HTTP::Get.new(url.to_s)
-      res = Net::HTTP.start(url.host, url.port) {|http|
-          http.request(req)
-      }
-    res.body
-=end
   end
 
 # Get the columns from the form_values table for a given form
