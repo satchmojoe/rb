@@ -137,7 +137,7 @@ class FormValuesTable < ActiveRecord::Migration
   end
 
   def self.get_key
-    local_file = ENV['USE_LOCAL_FILE']
+    local_file = ENV['USE_LOCAL_FILE'].down_case == 'true'
     if !local_file
       url = URI.parse(ENV['KEY_URL'])
       req = Net::HTTP::Get.new(url.to_s)
