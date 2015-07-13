@@ -38,6 +38,11 @@ class FormElement < ActiveRecord::Base
     if form_element_data['id']
       form_element = FormElement.find form_element_data['id']
 
+      # Some survey front-ends won't send deleted form element, they just remove them from the data set. We
+      #   need to assume any previously entered form element that is not in the submitted data set has been
+      #   marked for deletion and then set it back to included when it is included in the submitted data
+      form_element.deleted = false
+
       form_element_data.each do |k,v|
         if k != 'id' and k != "created_at" and k != 'form_id' and k != 'options' and k != 'element_type' and k != "field_logic_elements"
           FormElement.update(form_element_data['id'], k => v)

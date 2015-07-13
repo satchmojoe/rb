@@ -13,7 +13,7 @@ class Form < ActiveRecord::Base
   def json_view
     fj = JSON.parse self.to_json
 
-    fj[:form_elements] = FormElement.where(form_id: self.id).all.sort_by{|fe| fe.element_position}.map{|eo| eo.json_view}
+    fj[:form_elements] = FormElement.where(form_id: self.id).where(deleted: false).all.sort_by{|fe| fe.element_position}.map{|eo| eo.json_view}
 
     fj[:logic_rule_conditions] = Rails.application.config.rule_conditions
 
@@ -28,6 +28,11 @@ class Form < ActiveRecord::Base
         Form.update(form_data['id'], k => v)
       end
     end
+
+    # Some survey front-ends won't send deleted form element, they just remove them from the data set. We
+    #   need to assume any previously entered form element that is not in the submitted data set has been
+    #   marked for deletion and then set it back to included when it is included in the submitted data
+    form.form_elements.each{|e| e.update_attribute(:deleted, true)}
 
     form_data['form_elements'].each do |data|
       FormElement.update_from_submission data
