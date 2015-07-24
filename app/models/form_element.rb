@@ -4,6 +4,8 @@ class FormElement < ActiveRecord::Base
   before_save :set_position
   after_save :add_field_to_values_table
 
+  before_create :set_deleted
+
   belongs_to :form
   belongs_to :element_type
   delegate :e_type, to: :element_type
@@ -103,6 +105,7 @@ class FormElement < ActiveRecord::Base
       form_element.delete 'element_type'
 
       new_fe = FormElement.new form_element
+
       new_fe.element_type_id = ElementType.find_by_e_type(element_type).id
 
       new_fe.set_element_id
@@ -149,6 +152,11 @@ class FormElement < ActiveRecord::Base
 
   def set_position
     self.element_position ||= self.form.form_elements.count
+  end
+
+  def set_deleted
+    self.deleted = false
+    true
   end
 
   def add_field_to_values_table
