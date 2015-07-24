@@ -9,6 +9,7 @@ ElementType.create!([
   {e_type: "number"},
   {e_type: "tel"},
   {e_type: "matrix"},
+  {e_type: "name"},
   {e_type: "section"}
 ])
 User.create!([
