@@ -116,6 +116,8 @@ class FormElement < ActiveRecord::Base
       # This is a refactor to extract out this to a method
       responses.push FormElement.setup_options new_fe, new_options, responses
 
+      responses.push  FormElement.setup_logic_elements new_fe, new_logic_elements
+
       # Propogate errors up
       if !responses.compact.empty?
         raise "Error: #{responses.to_s}"
