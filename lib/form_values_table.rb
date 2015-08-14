@@ -154,7 +154,7 @@ class FormValuesTable < ActiveRecord::Migration
 
 # Get the columns from the form_values table for a given form
   def self.get_forms_value_columns form
-    res = ActiveRecord::Base.connection.execute( "select element_position, column_name from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position")
+    res = ActiveRecord::Base.connection.execute( "select element_position, column_name from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where deleted = false and table_name = 'form_#{form}' order by element_position")
     JSON.parse(res.to_json).map{|e| e['column_name']}
   end
 
@@ -209,7 +209,7 @@ class FormValuesTable < ActiveRecord::Migration
       begin
         if form and ActiveRecord::Base.connection.table_exists?( 'form_' + form.to_s) and !query_string.blank?
           data = FormValuesTable.decrypt_data(JSON.parse ActiveRecord::Base.connection.execute( query_string).to_json)
-          titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' order by element_position").to_json
+          titles = JSON.parse ActiveRecord::Base.connection.execute("select element_position, column_name, element_title from INFORMATION_SCHEMA.COLUMNS left join form_elements on column_name = element_name where table_name = 'form_#{form}' and deleted = false order by element_position").to_json
           JSON.parse({data: data, titles: titles}.to_json)
         else
           {error: "no value table for that form id"}
@@ -282,7 +282,7 @@ class FormValuesTable < ActiveRecord::Migration
     query_strings = []
 
     filters.each do |filter|
-      q = "select element_name from form_elements where element_title = '#{filter[:col]}'"
+      q = "select element_name from form_elements where deleted = false and element_title = '#{filter[:col]}'"
       element_name = JSON.parse(ActiveRecord::Base.connection.execute(q).to_json)[0]["element_name"]
       query_strings.push  " #{element_name} = '#{filter[:val]}' "
     end
