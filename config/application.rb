@@ -32,6 +32,6 @@ module RubyFormsEngine
 
     config.admin_set = false
 
-    config.rule_conditions = ['equals','greater_than','less_than','contains']
+    config.rule_conditions = ['==','>','<','.include?']
   end
 end
