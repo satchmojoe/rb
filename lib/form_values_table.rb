@@ -17,10 +17,14 @@ class FormValuesTable < ActiveRecord::Migration
 
   def self.add_field_to_values_table element
     columns = FormValuesTable.get_forms_value_columns element.form_id
-
     if !(columns.include? element.element_name)
-      change_table ('form_' + element.form_id.to_s).to_sym do |t|
-        t.string      element.element_name.to_sym
+      begin
+        change_table ('form_' + element.form_id.to_s).to_sym do |t|
+          t.string      element.element_name.to_sym
+        end
+      rescue Exception => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace
       end
     end
   end

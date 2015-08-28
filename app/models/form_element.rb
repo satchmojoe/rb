@@ -2,7 +2,7 @@ class FormElement < ActiveRecord::Base
   before_save :set_element_id
   before_save :set_element_name
   before_save :set_position
-  after_save :add_field_to_values_table
+  after_create :add_field_to_values_table
 
   before_create :set_deleted
 
